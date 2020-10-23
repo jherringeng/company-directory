@@ -1,0 +1,46 @@
+td {
+  width: 20%;
+}
+
+body {
+  background-color: green;
+}
+
+div .nav-link:hover {
+  cursor: pointer;
+}
+
+.container {
+    background-color: white !important;
+    display: block;
+    overflow: auto;
+}
+
+.employee {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 4px 0px;
+  border-bottom: 3px solid red;
+}
+
+.employee:nth-child(odd) {
+  background-color: white;
+}
+
+.employee:nth-child(even) {
+  background-color: #CCC;
+}
+
+.employee-info{
+  width: 20%;
+  padding: 3px;
+  word-wrap: break-word;
+}
+
+@media only screen and (max-width: 600px) {
+  .employee-info{
+    width: 50%;
+    padding: 3px;
+  }
+}
