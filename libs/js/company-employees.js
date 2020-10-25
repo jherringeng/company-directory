@@ -2,16 +2,30 @@ import {getAllDepartments, getAllLocations} from './ajax-calls.js';
 
 var employees, departments, locations;
 
+// Callback functions to set global variables - passed to ajax-calls
+function setDepartments(departmentsInput) {
+  departments = departmentsInput;
+  console.log(departments);
+}
+
+function setLocations(locationsInput) {
+  locations = locationsInput;
+  console.log(locations);
+}
+
+// Get information from database once loaded
 $( document ).ready(function() {
 
-  getAllEmployees();
+  getAllEmployees(displayAllEmployees);
 
-  departments = getAllDepartments();
+  getAllDepartments(setDepartments);
 
-  locations = getAllLocations();
+  getAllLocations(setLocations);
+
 });
 
-function getAllEmployees() {
+
+function getAllEmployees(callback) {
   $.ajax({
     url: "libs/php/getAll.php",
     type: 'POST',
@@ -23,9 +37,8 @@ function getAllEmployees() {
 
       if (result.status.name == "ok") {
 
-        console.log(result)
         employees = result['data'];
-        displayAllEmployees(employees);
+        callback(employees);
 
       }
 
@@ -35,6 +48,33 @@ function getAllEmployees() {
     }
   });
 }
+
+function displayAllEmployees(employees) {
+  $("#company-employees").html("")
+  $("#company-employees").append('<div id="employeesHeader" class ="employee">');
+  $("#employeesHeader").append('<div class="employee-info"><b>Name</b></div>');
+  $("#employeesHeader").append('<div class="employee-info"><b>Job Title</b></div>');
+  $("#employeesHeader").append('<div class="employee-info"><b>Email Address</b></div>');
+  $("#employeesHeader").append('<div class="employee-info"><b>Department</b></div>');
+  $("#employeesHeader").append('<div class="employee-info"><b>Location</b></div>');
+
+
+  employees.forEach(function(employee) {
+
+    $("#company-employees").append('<div id="employee' + employee['id'] + '" class ="employee" data-id="' + employee['id'] + '">'); // onclick="getEmployee(' + employee['id'] + ')"
+    $("#employee" + employee['id']).append('<div class="employeeName employee-info"><b>' + employee['firstName'] + ' ' + employee['lastName'] + '</b></div>');
+    $("#employee" + employee['id']).append('<div class="employeeTitle employee-info">' + employee['jobTitle'] + '</div>');
+    $("#employee" + employee['id']).append('<div class="employeeEmail employee-info">' + employee['email'] + '</div>');
+    $("#employee" + employee['id']).append('<div class="employeeDepartment employee-info">' + employee['department'] + '</div>');
+    $("#employee" + employee['id']).append('<div class="employeeLocation employee-info">' + employee['location'] + '</div>');
+
+  })
+}
+
+// Event listener for employee class - gets employee from database
+$(document).on('click', '.employee', function () {
+  getEmployee($(this).data("id"));
+});
 
 function getEmployee(employeeId) {
 
@@ -53,7 +93,8 @@ function getEmployee(employeeId) {
       if (result.status.name == "ok") {
 
         console.log(result)
-        displayEmployeeInfoModal(result);
+        var employee = result['data'][0];
+        displayEmployeeInfoModal(employee);
 
       }
 
@@ -65,31 +106,35 @@ function getEmployee(employeeId) {
 
 }
 
-function displayAllEmployees(employees) {
-  $("#company-employees").html("")
-  $("#company-employees").append('<div id="employeesHeader" class ="employee">');
-  $("#employeesHeader").append('<div class="employee-info"><b>Name</b></div>');
-  $("#employeesHeader").append('<div class="employee-info"><b>Job Title</b></div>');
-  $("#employeesHeader").append('<div class="employee-info"><b>Email Address</b></div>');
-  $("#employeesHeader").append('<div class="employee-info"><b>Department</b></div>');
-  $("#employeesHeader").append('<div class="employee-info"><b>Location</b></div>');
+function displayEmployeeInfoModal(employee) {
 
+    $("#employeeModalLabel").html('Employee Information');
+    $("#employeeModalBody").html("");
+    $("#employeeModalBody").append('<table id="employeeTable" class="table">');
+    $("#employeeTable").append('<tr><td>First Name</td><td>' + employee['firstName'] + '</td></tr>');
+    $("#employeeTable").append('<tr><td>Last Name</td><td>' + employee['lastName'] + '</td></tr>');
+    $("#employeeTable").append('<tr><td>Job Title</td><td>' + employee['jobTitle'] + '</td></tr>');
+    $("#employeeTable").append('<tr><td>Email</td><td>' + employee['email'] + '</td></tr>');
+    $("#employeeTable").append('<tr><td>Department</td><td>' + employee['department'] + '</td></tr>');
+    $("#employeeTable").append('<tr><td>Location</td><td>' + employee['location'] + '</td></tr>');
 
-  employees.forEach(function(employee) {
+    // Add buttons to modal footer
+    $('.modal-footer').html("");
+    $('.modal-footer').append('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>')
+    $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeUpdateButton" data-id="' + employee['id'] + '">Update</button>')
 
-    $("#company-employees").append('<div id="employee' + employee['id'] + '" class ="employee" onclick="getEmployee(' + employee['id'] + ')">');
-    $("#employee" + employee['id']).append('<div class="employeeName employee-info"><b>' + employee['firstName'] + ' ' + employee['lastName'] + '</b></div>');
-    $("#employee" + employee['id']).append('<div class="employeeTitle employee-info">' + employee['jobTitle'] + '</div>');
-    $("#employee" + employee['id']).append('<div class="employeeEmail employee-info">' + employee['email'] + '</div>');
-    $("#employee" + employee['id']).append('<div class="employeeDepartment employee-info">' + employee['department'] + '</div>');
-    $("#employee" + employee['id']).append('<div class="employeeLocation employee-info">' + employee['location'] + '</div>');
+    $('#employeeModal').modal('show');
 
-  })
 }
+
+// Event listener for employee class - gets employee from database
+$(document).on('click', '#employeeUpdateButton', function () {
+  updateEmployee($(this).data("id"));
+});
 
 function updateEmployee(employeeId) {
 
-  console.log("Getting employee")
+  console.log("Update employee")
 
   $.ajax({
     url: "libs/php/getEmployee.php",
@@ -115,7 +160,6 @@ function updateEmployee(employeeId) {
           $("#employeeTable").append('<tr><td><label for="title">Job Title</td><td><input type="text" id="title" name="title" value="' + employee['jobTitle'] + '"></td></tr>');
           $("#employeeTable").append('<tr><td><label for="email">Email</td><td><input type="email" id="email" name="email" value="' + employee['email'] + '"></td></tr>');
           $("#employeeTable").append('<tr><td><label for="department">Department</td><td><select id="department" name="department" value="' + employee['departmentID']  + '"></td></tr>');
-          deptsAtLocation = [];
           departments.forEach(function(department) {
             $("#department").append('<option value="' + department['id'] + '">' + department['name'] + '</option>');
           });
@@ -125,13 +169,16 @@ function updateEmployee(employeeId) {
             $("#location").append('<option value="' + location['id']  + '">' + location['name'] + '</option>');
           });
           $("#location").val(employee['locationID']).change();
-          $('#employeeUpdateButton').attr('onclick', 'saveEmployeeUpdates(' + employee['id'] + ')');
-          $('#employeeUpdateButton').html('Save Changes');
 
-        })
+          // Add buttons to modal footer
+          $('.modal-footer').html("");
+          $('.modal-footer').append('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>')
+          $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeSaveUpdateButton" data-id="' + employee['id'] + '">Save Changes</button>')
 
+          $('#employeeModal').modal('show');
+
+        });
       }
-
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("Request failed");
@@ -140,8 +187,13 @@ function updateEmployee(employeeId) {
 
 }
 
-function saveEmployeeUpdates(employeeId) {
-  console.log("Getting employee")
+// Event listener for employee class - gets employee from database
+$(document).on('click', '#employeeSaveUpdateButton', function () {
+  employeeSaveUpdate($(this).data("id"));
+});
+
+function employeeSaveUpdate(employeeId) {
+  console.log("Saving update to employee")
 
   $.ajax({
     url: "libs/php/updateEmployee.php",
@@ -163,7 +215,7 @@ function saveEmployeeUpdates(employeeId) {
         console.log("Updated Employee")
         console.log();
         var employee = result['data'][0];
-        displayEmployeeInfoModal(result);
+        displayEmployeeInfoModal(employee);
 
         $('#employee' + employee['id'] + ' .employeeName').html('<b>' + employee['firstName'] + ' ' + employee['lastName'] + '</b>')
         $('#employee' + employee['id'] + ' .employeeTitle').html(employee['jobTitle']);
@@ -171,7 +223,7 @@ function saveEmployeeUpdates(employeeId) {
         $('#employee' + employee['id'] + ' .employeeDepartment').html(employee['department']);
         $('#employee' + employee['id'] + ' .employeeLocation').html(employee['location']);
 
-        getAllEmployees();
+        getAllEmployees(displayAllEmployees);
 
       }
 
@@ -181,6 +233,11 @@ function saveEmployeeUpdates(employeeId) {
     }
   });
 }
+
+// Event listener for employee class - gets employee from database
+$(document).on('click', '#newEmployee', function () {
+  openNewEmployeeModal();
+});
 
 function openNewEmployeeModal() {
   $("#employeeModalLabel").html('Employee Information');
@@ -199,10 +256,20 @@ function openNewEmployeeModal() {
   locations.forEach(function(location) {
     $("#location").append('<option value="' + location['id']  + '">' + location['name'] + '</option>');
   });
-  $('#employeeUpdateButton').attr('onclick', 'saveNewEmployee()');
-  $('#employeeUpdateButton').html('Save Employee');
+
+  // Add buttons to modal footer
+  $('.modal-footer').html("");
+  $('.modal-footer').append('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>')
+  $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeSaveNewButton" data-id="">Save employee</button>')
+
   $('#employeeModal').modal('show');
+
 }
+
+// Event listener for employee class - gets employee from database
+$(document).on('click', '#employeeSaveNewButton', function () {
+  saveNewEmployee($(this).data("id"));
+});
 
 function saveNewEmployee() {
   console.log("Saving employee")
@@ -224,11 +291,10 @@ function saveNewEmployee() {
       if (result.status.name == "ok") {
 
         console.log("Saved Employee")
-        console.log();
         var employee = result['data'][0];
-        displayEmployeeInfoModal(result);
+        displayEmployeeInfoModal(employee);
 
-        getAllEmployees();
+        getAllEmployees(displayAllEmployees);
 
       }
 
@@ -237,23 +303,4 @@ function saveNewEmployee() {
       console.log("Request failed");
     }
   });
-}
-
-function displayEmployeeInfoModal(result) {
-  result['data'].forEach(function(employee) {
-
-    $("#employeeModalLabel").html('Employee Information');
-    $("#employeeModalBody").html("");
-    $("#employeeModalBody").append('<table id="employeeTable" class="table">');
-    $("#employeeTable").append('<tr><td>First Name</td><td>' + employee['firstName'] + '</td></tr>');
-    $("#employeeTable").append('<tr><td>Last Name</td><td>' + employee['lastName'] + '</td></tr>');
-    $("#employeeTable").append('<tr><td>Job Title</td><td>' + employee['jobTitle'] + '</td></tr>');
-    $("#employeeTable").append('<tr><td>Email</td><td>' + employee['email'] + '</td></tr>');
-    $("#employeeTable").append('<tr><td>Department</td><td>' + employee['department'] + '</td></tr>');
-    $("#employeeTable").append('<tr><td>Location</td><td>' + employee['location'] + '</td></tr>');
-    $('#employeeUpdateButton').attr('onclick', 'updateEmployee(' + employee['id'] + ')');
-    $('#employeeUpdateButton').html('Update');
-    $('#employeeModal').modal('show');
-
-  })
 }

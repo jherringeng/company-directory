@@ -31,7 +31,7 @@
             <a class="nav-link" href="#">Departments</a>
           </li>
           <li class="nav-item">
-            <div class="nav-link" onclick="openNewEmployeeModal()">New Employee</div>
+            <div class="nav-link" id="newEmployee">New Employee</div>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -64,14 +64,15 @@
           <div id="employeeModalBody">
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="employeeUpdateButton" onclick="">Update</button>
+            <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="employeeUpdateButton" onclick="">Update</button> -->
           </div>
         </div>
       </div>
     </div>
 
     <script src="libs/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="libs/js/jquery.session.js"></script>
     <script type="module" src="libs/js/company-employees.js"></script>
 
   </body>

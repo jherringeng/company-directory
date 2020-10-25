@@ -1,4 +1,5 @@
-export function getAllDepartments() {
+
+export function getAllDepartments(callback) {
   $.ajax({
     url: "libs/php/getAllDepartments.php",
     type: 'POST',
@@ -9,9 +10,8 @@ export function getAllDepartments() {
     success: function(result) {
 
       if (result.status.name == "ok") {
-        console.log(result['data']);
-        return result['data'];
-
+        var departments = result['data'];
+        callback(departments);
       }
 
     },
@@ -21,7 +21,7 @@ export function getAllDepartments() {
   });
 }
 
-export function getAllLocations() {
+export function getAllLocations(callback) {
   $.ajax({
     url: "libs/php/getAllLocations.php",
     type: 'POST',
@@ -32,9 +32,8 @@ export function getAllLocations() {
     success: function(result) {
 
       if (result.status.name == "ok") {
-        console.log(result['data']);
-        return result['data'];
-
+        var locations = result['data'];
+        callback(locations);
       }
 
     },

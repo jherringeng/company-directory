@@ -24,6 +24,25 @@ div .nav-link:hover {
   border-bottom: 3px solid red;
 }
 
+.location {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 4px 0px;
+}
+
+.location-name {
+  width: 30%;
+}
+
+.location-department {
+  width: 70%;
+}
+
+.employee-name {
+  display: inline;
+}
+
 .employee:nth-child(odd) {
   background-color: white;
 }
