@@ -21,26 +21,32 @@ div .nav-link:hover {
   flex-direction: row;
   flex-wrap: wrap;
   padding: 4px 0px;
-  border-bottom: 3px solid red;
+  margin: 4px 0px;
 }
 
 .location {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  padding: 4px 0px;
+  padding: 10px;
+  margin: 10px 0px;
 }
 
 .location-name {
-  width: 30%;
+  width: 100%;
 }
 
 .location-department {
-  width: 70%;
+  padding: 4px 0px;
+}
+
+.location-department-name {
+  width: 100%;
+}
+
+.location-show-employees {
+  width: 100%;
 }
 
 .employee-name {
-  display: inline;
+  margin: 5px;
 }
 
 .employee:nth-child(odd) {
@@ -62,4 +68,12 @@ div .nav-link:hover {
     width: 50%;
     padding: 3px;
   }
+}
+
+#filterEmployees {
+  position: fixed;
+  width: 100%;
+  left: 0px;
+  bottom: 0px;
+  z-index: 1;
 }
