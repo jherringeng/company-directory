@@ -198,3 +198,73 @@ function saveNewEmployee() {
     }
   });
 }
+
+// Event listener for employee class - gets employee from database
+$(document).on('click', '#showEmployeeFilterButton', function () {
+  employeeFilterModal();
+});
+
+function employeeFilterModal() {
+  $("#informationModalLabel").html('Employee Filter');
+  $("#informationModalBody").html("");
+  $("#informationModalBody").append('<table id="employeeTable" class="table">');
+
+  // $("#employeeTable").append('<tr><td><label for="fname">First name</label></td><td><input type="text" id="fname" name="fname" value=""></td></tr>');
+  // $("#employeeTable").append('<tr><td><label for="lname">Last Name</td><td><input type="text" id="lname" name="lname" value=""></td></tr>');
+  // $("#employeeTable").append('<tr><td><label for="title">Job Title</td><td><input type="text" id="title" name="title" value=""></td></tr>');
+  // $("#employeeTable").append('<tr><td><label for="email">Email</td><td><input type="email" id="email" name="email" value=""></td></tr>');
+
+  $("#employeeTable").append('<tr><td><label for="filterBy">Filter by:</td><td><select id="filterBy" name="filterBy" value=""></td></tr>');
+    $("#filterBy").append('<option value="noFilter">No filter</option>');
+    $("#filterBy").append('<option value="department">Department</option>');
+    $("#filterBy").append('<option value="location">Location</option>');
+
+  $("#employeeTable").append('<tr><td><label for="department">Department</td><td><select id="department" name="department" value=""></td></tr>');
+    departments.forEach(function(department) {
+      $("#department").append('<option value="' + department['id'] + '">' + department['name'] + '</option>');
+    });
+  $("#employeeTable").append('<tr><td><label for="location">Location</td><td><select id="location" name="location" value=""></td></tr>');
+    locations.forEach(function(location) {
+      $("#location").append('<option value="' + location['id']  + '">' + location['name'] + '</option>');
+    });
+
+  // Add buttons to modal footer
+  $('.modal-footer').html("");
+  $('.modal-footer').append('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>')
+  $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeFilterButton" data-id="">Filter employees</button>')
+
+  $('#informationModal').modal('show');
+}
+
+// Event listener for employee class - gets employee from database
+$(document).on('click', '#employeeFilterButton', function () {
+  getFilteredEmployees(displayAllEmployees);
+});
+
+function getFilteredEmployees(callback) {
+  console.log("filtering employees")
+  $.ajax({
+    url: "libs/php/getFilteredEmployees.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      filterBy: $('#filterBy').val(),
+      department: $('#department').val(),
+      location: $('#location').val(),
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+
+        console.log("Success!")
+        employees = result['data'];
+        callback(employees);
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+    }
+  });
+}
