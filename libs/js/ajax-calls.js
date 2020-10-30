@@ -1,3 +1,23 @@
+export function getAllTables(callback) {
+  $.ajax({
+    url: "libs/php/getAllTables.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+        callback(result['data']);
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+    }
+  });
+}
 
 export function getAllDepartments(callback) {
   $.ajax({

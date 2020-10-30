@@ -1,29 +1,40 @@
-import { getAllDepartments, getAllLocations, getEmployee, updateEmployee} from './ajax-calls.js';
+import { getAllTables, getEmployee, updateEmployee} from './ajax-calls.js';
 import { displayEmployeeInfoModal } from './display-functions.js';
 
 var employees, departments, locations;
 
-// Callback functions to set global variables - passed to ajax-calls
-function setDepartments(departmentsInput) {
-  departments = departmentsInput;
-  console.log(departments);
-}
-
-function setLocations(locationsInput) {
-  locations = locationsInput;
-  console.log(locations);
-}
-
-// Get information from database once loaded
 $( document ).ready(function() {
 
-  getAllEmployees(displayAllEmployees);
-
-  getAllDepartments(setDepartments);
-
-  getAllLocations(setLocations);
+  getAllTables(displayDepartmentPageData)
 
 });
+
+// Callback for getAllTables sets and displays locations, departments and employees
+function displayDepartmentPageData(tablesInput) {
+  // Set global variables
+  locations = tablesInput['locations'];
+  console.log(locations)
+  departments = tablesInput['departments'];
+  console.log(departments)
+  employees = tablesInput['employees'];
+
+  // Adds locations then departments in that location then employees in that department
+  departments.forEach(function(department) {
+    var departmentIdTag = 'department-' + department['id'];
+    $('#company-departments').append('<div id="department-' + department['id'] + '" class="border border-primary location"></div>');
+    $('#' + departmentIdTag).append('<div class="location-name"><h3>' + department['name'] + '</h3><h5>Manager: ' + department['managerFirstName'] + ' ' + department['managerLastName'] + '</h5><h5>' + department['location'] + '</h5></div>');
+    var departmentEmployeesIdTag = 'department-employees' + department['id'];
+    $('#' + departmentIdTag).append('<button data-toggle="collapse" data-target="#' + departmentEmployeesIdTag + '" class="btn btn-info location-show-employees">Show Employees</button>');
+    $('#' + departmentIdTag).append('<div id="' + departmentEmployeesIdTag + '" class="location-department collapse">');
+    employees.forEach(function(employee) {
+      if (employee['departmentID'] === department['id']) {
+        $('#' + departmentEmployeesIdTag).append( '<div id="employee' + employee['id'] + '" class="employee-name btn btn-light" data-id=' + employee['id'] + '>' + employee['firstName'] + ' ' + employee['lastName'] + '</div>');
+      }
+    });
+  })
+
+  $('.container').css('height', 'auto');
+};
 
 // getAllEmployees - gets all employees with details
 // Uses callback displayAllEmployees to display on screen
@@ -71,8 +82,6 @@ function displayAllEmployees(employees) {
     $("#employee" + employee['id']).append('<div class="employeeLocation employee-info">' + employee['location'] + '</div>');
 
   })
-
-  $('.container').css('height', 'auto');
 }
 
 // Event listener for displaying and updating employees
@@ -231,62 +240,4 @@ function employeeFilterModal() {
   $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeFilterButton" data-id="">Filter employees</button>')
 
   $('#informationModal').modal('show');
-}
-
-// Event listener for employee class - gets employee from database
-$(document).on('click', '#employeeFilterButton', function () {
-  getFilteredEmployees(displayAllEmployees);
-});
-
-function getFilteredEmployees(callback) {
-  console.log("filtering employees")
-  $.ajax({
-    url: "libs/php/getFilteredEmployees.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {
-      filterBy: $('#filterBy').val(),
-      department: $('#department').val(),
-      location: $('#location').val(),
-    },
-    success: function(result) {
-
-      if (result.status.name == "ok") {
-
-        console.log("Success!")
-        employees = result['data'];
-        callback(employees);
-
-      }
-
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
-    }
-  });
-}
-
-///* Following from bootstrap-menu */
-// add padding top to show content behind navbar
-$('.container').css('padding-top', $('.navbar').outerHeight() + 'px')
-
-var last_scroll_top = 0;
-var scroll_top = $(this).scrollTop();
-
-// detect scroll top or down
-if ($('.smart-scroll').length > 0) { // check if element exists
-
-    $(window).on('scroll', function() {
-        console.log("Scrolling, scrolling, scrolling...")
-        scroll_top = $(this).scrollTop();
-        if(scroll_top < last_scroll_top) {
-            $('.smart-scroll').removeClass('scrolled-down').addClass('scrolled-up');
-            console.log("Scroll up")
-        }
-        else {
-            $('.smart-scroll').removeClass('scrolled-up').addClass('scrolled-down');
-            console.log("Scroll down")
-        }
-        last_scroll_top = scroll_top;
-    });
 }

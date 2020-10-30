@@ -94,7 +94,9 @@
 	$output['data']['locations'] = $data;
 
 	// Get location table data
-	$query = 'SELECT * FROM department ORDER BY name';
+	$query = 'SELECT department.id, department.name, department.departmentManager, department.locationID, personnel.firstName as managerFirstName, personnel.lastName as managerLastName, location.name as location FROM department LEFT JOIN personnel ON department.departmentManager=personnel.id LEFT JOIN location ON department.locationID=location.id ORDER BY name';
+	// $query = 'SELECT location.id, location.name, location.address, location.postcode, location.manager, personnel.firstName, personnel.lastName FROM location LEFT JOIN personnel ON location.manager=personnel.id ORDER BY location.name';
+
 
 	$result = $conn->query($query);
 

@@ -1,4 +1,4 @@
-import { getAllDepartments, getAllLocations, getEmployee, updateEmployee} from './ajax-calls.js';
+import { getAllTables, getEmployee, updateEmployee} from './ajax-calls.js';
 import { displayEmployeeInfoModal } from './display-functions.js';
 
 var employees, departments, locations;
@@ -38,7 +38,6 @@ function displayLocationPageData(tablesInput) {
         $(locationIdTag).append('<div id="' + departmentIdTag + '" class="location-department">');
         $('#' + departmentIdTag).append('<div class="location-department-name"><h4>' + department['name'] + '</h4></div>');
         $('#' + departmentIdTag).append('<button data-toggle="collapse" data-target="#' + departmentEmployeesIdTag + '" class="btn btn-info location-show-employees">Show Employees</button>');
-        // $('#' + departmentIdTag).append('<div id="demo" class="collapse">Lorem ipsum dolor text....</div>');
         $('#' + departmentIdTag).append('<div id="' + departmentEmployeesIdTag + '" class="location-department collapse">');
         console.log(departmentEmployeesIdTag)
         employees.forEach(function(employee) {
@@ -50,6 +49,7 @@ function displayLocationPageData(tablesInput) {
       }
     })
   })
+  $('.container').css('height', 'auto');
 }
 
 // Event listeners for displaying and updating employees - ADD TO EACH PAGE SCRIPT
@@ -68,27 +68,6 @@ $(document).on('click', '#employeeUpdateButton', function () {
 $(document).on('click', '#employeeSaveUpdateButton', function () {
   employeeSaveUpdate($(this).data("id"));
 });
-
-export function getAllTables(callback) {
-  $.ajax({
-    url: "libs/php/getAllTables.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {
-
-    },
-    success: function(result) {
-
-      if (result.status.name == "ok") {
-        callback(result['data']);
-      }
-
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
-    }
-  });
-}
 
 function employeeSaveUpdate(employeeId) {
   console.log("Saving update to employee")
