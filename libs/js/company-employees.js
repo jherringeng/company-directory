@@ -8,7 +8,11 @@ function setDepartments(departmentsInput) {
   departments = departmentsInput;
   console.log(departments);
   departments.forEach(function(department) {
-    departmentManager[department['id']] = department['managerFirstName'] + ' ' + department['managerLastName'];
+    if (department['managerFirstName'] == null || department['managerLastName'] == null) {
+      departmentManager[department['id']] = "No manager";
+    } else {
+      departmentManager[department['id']] = department['managerFirstName'] + ' ' + department['managerLastName'];
+    }
   })
   console.log(departmentManager)
 }
@@ -21,13 +25,57 @@ function setLocations(locationsInput) {
 // Get information from database once loaded
 $( document ).ready(function() {
 
-  getAllDepartments(setDepartments);
-
-  getAllLocations(setLocations);
-
-  getAllEmployees(displayAllEmployees);
+  getAllTablesForEmployees(displayEmployeePageData)
 
 });
+
+// getAllEmployees - gets all employees with details
+// Uses callback displayAllEmployees to display on screen
+function getAllTablesForEmployees(callback) {
+  $.ajax({
+    url: "libs/php/getAllTablesForEmployees.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+
+        var tableData = result['data'];
+        console.log(tableData)
+        callback(tableData);
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+    }
+  });
+}
+
+// Callback for getAllTablesForEmployees sets and displays locations, departments and employees
+function displayEmployeePageData(tablesInput) {
+  // Set global variables
+
+  departments = tablesInput['departments'];
+  departments.forEach(function(department) {
+    if (department['managerFirstName'] == null || department['managerLastName'] == null) {
+      departmentManager[department['id']] = "No manager";
+    } else {
+      departmentManager[department['id']] = department['managerFirstName'] + ' ' + department['managerLastName'];
+    }
+  })
+  console.log(departments)
+  locations = tablesInput['locations'];
+  console.log(locations)
+
+  employees = tablesInput['employees'];
+  displayAllEmployees(employees)
+
+}
 
 // getAllEmployees - gets all employees with details
 // Uses callback displayAllEmployees to display on screen
