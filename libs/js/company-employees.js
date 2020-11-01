@@ -1,12 +1,16 @@
 import { getAllDepartments, getAllLocations, getEmployee, updateEmployee} from './ajax-calls.js';
 import { displayEmployeeInfoModal } from './display-functions.js';
 
-var employees, departments, locations;
+var employees, departments, locations, departmentManager = {};
 
 // Callback functions to set global variables - passed to ajax-calls
 function setDepartments(departmentsInput) {
   departments = departmentsInput;
   console.log(departments);
+  departments.forEach(function(department) {
+    departmentManager[department['id']] = department['managerFirstName'] + ' ' + department['managerLastName'];
+  })
+  console.log(departmentManager)
 }
 
 function setLocations(locationsInput) {
@@ -17,11 +21,11 @@ function setLocations(locationsInput) {
 // Get information from database once loaded
 $( document ).ready(function() {
 
-  getAllEmployees(displayAllEmployees);
-
   getAllDepartments(setDepartments);
 
   getAllLocations(setLocations);
+
+  getAllEmployees(displayAllEmployees);
 
 });
 
@@ -40,6 +44,7 @@ function getAllEmployees(callback) {
       if (result.status.name == "ok") {
 
         employees = result['data'];
+        console.log(employees)
         callback(employees);
 
       }
@@ -56,7 +61,7 @@ function displayAllEmployees(employees) {
   $("#company-employees").append('<div id="employeesHeader" class ="employee">');
   $("#employeesHeader").append('<div class="employee-info"><b>Name</b></div>');
   $("#employeesHeader").append('<div class="employee-info"><b>Job Title</b></div>');
-  $("#employeesHeader").append('<div class="employee-info"><b>Email Address</b></div>');
+  $("#employeesHeader").append('<div class="employee-info"><b>Manager</b></div>');
   $("#employeesHeader").append('<div class="employee-info"><b>Department</b></div>');
   $("#employeesHeader").append('<div class="employee-info"><b>Location</b></div>');
 
@@ -66,7 +71,7 @@ function displayAllEmployees(employees) {
     $("#company-employees").append('<div id="employee' + employee['id'] + '" class ="employee border border-primary" data-id="' + employee['id'] + '">'); // onclick="getEmployee(' + employee['id'] + ')"
     $("#employee" + employee['id']).append('<div class="employeeName employee-info"><b>' + employee['firstName'] + ' ' + employee['lastName'] + '</b></div>');
     $("#employee" + employee['id']).append('<div class="employeeTitle employee-info">' + employee['jobTitle'] + '</div>');
-    $("#employee" + employee['id']).append('<div class="employeeEmail employee-info">' + employee['email'] + '</div>');
+    $("#employee" + employee['id']).append('<div class="employeeManager employee-info">' + departmentManager[employee['departmentID']] + '</div>');
     $("#employee" + employee['id']).append('<div class="employeeDepartment employee-info">' + employee['department'] + '</div>');
     $("#employee" + employee['id']).append('<div class="employeeLocation employee-info">' + employee['location'] + '</div>');
 
