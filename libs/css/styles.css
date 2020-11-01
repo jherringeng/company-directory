@@ -25,6 +25,15 @@ div .nav-link:hover {
    transform:translateY(0); transition: all 0.3s ease-in-out;
 }
 
+.navbar-nav {
+    width:100%;
+    margin: 0;
+}
+
+.nav-toolbar {
+  justify-content: flex-end !important;
+}
+
 .container {
     background-color: white !important;
     display: block;
@@ -54,12 +63,24 @@ div .nav-link:hover {
 }
 
 .location-department-name {
+  display: inline-block;
+}
+
+.location-department-name h4{
+  display: inline-block;
+}
+
+.department-name {
+  display: inline-block;
+}
+
+.department-name h3{
   width: 100%;
 }
 
-/* .location-show-employees {
-  width: 20%;
-} */
+.department-name h5 {
+  display: inline-block;
+}
 
 .employee-name {
   margin: 5px;
@@ -79,6 +100,16 @@ div .nav-link:hover {
   word-wrap: break-word;
 }
 
+.location-show-employees {
+  display: inline-block;
+  float: right;
+}
+
+.department-show-employees {
+  display: inline-block;
+  float: right;
+}
+
 @media only screen and (max-width: 600px) {
   .employee-info{
     width: 50%;
@@ -87,13 +118,11 @@ div .nav-link:hover {
 
   .location-show-employees {
     width: 100%;
+    float: inherit;
   }
-}
 
-#showEmployeeFilterButton {
-  position: fixed;
-  width: 100%;
-  left: 0px;
-  bottom: 0px;
-  z-index: 1;
+  .department-show-employees {
+    width: 100%;
+    float: inherit;
+  }
 }

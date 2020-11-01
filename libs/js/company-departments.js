@@ -22,13 +22,13 @@ function displayDepartmentPageData(tablesInput) {
   departments.forEach(function(department) {
     var departmentIdTag = 'department-' + department['id'];
     $('#company-departments').append('<div id="department-' + department['id'] + '" class="border border-primary location"></div>');
-    $('#' + departmentIdTag).append('<div class="location-name"><h3>' + department['name'] + '</h3><h5>Manager: ' + department['managerFirstName'] + ' ' + department['managerLastName'] + '</h5><h5>' + department['location'] + '</h5></div>');
+    $('#' + departmentIdTag).append('<div class="department-name"><h3>' + department['name'] + '</h3><h5>Manager: ' + department['managerFirstName'] + ' ' + department['managerLastName'] + '</h5><h5>' + department['location'] + '</h5></div>');
     var departmentEmployeesIdTag = 'department-employees' + department['id'];
-    $('#' + departmentIdTag).append('<button data-toggle="collapse" data-target="#' + departmentEmployeesIdTag + '" class="btn btn-info location-show-employees">Show Employees</button>');
-    $('#' + departmentIdTag).append('<div id="' + departmentEmployeesIdTag + '" class="location-department collapse">');
+    $('#' + departmentIdTag).append('<button data-toggle="collapse" data-target="#' + departmentEmployeesIdTag + '" class="btn btn-info department-show-employees">Show Employees</button>');
+    $('#' + departmentIdTag).append('<div id="' + departmentEmployeesIdTag + '" class="department-employees collapse">');
     employees.forEach(function(employee) {
       if (employee['departmentID'] === department['id']) {
-        $('#' + departmentEmployeesIdTag).append( '<div id="employee' + employee['id'] + '" class="employee-name btn btn-light" data-id=' + employee['id'] + '>' + employee['firstName'] + ' ' + employee['lastName'] + '</div>');
+        $('#' + departmentEmployeesIdTag).append( '<div id="employee' + employee['id'] + '" class="employee-name btn btn-outline-dark" data-id=' + employee['id'] + '>' + employee['firstName'] + ' ' + employee['lastName'] + '</div>');
       }
     });
   })

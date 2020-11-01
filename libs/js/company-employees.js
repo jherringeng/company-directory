@@ -266,7 +266,40 @@ function getFilteredEmployees(callback) {
   });
 }
 
-///* Following from bootstrap-menu */
+// Event listener for employee class - gets employee from database
+$(document).on('keyup', '#searchEmployeesInput', 'input', function () {
+  var searchTerm = $('#searchEmployeesInput').val();
+  console.log(searchTerm)
+  searchAllEmployees(searchTerm, displayAllEmployees);
+});
+
+function searchAllEmployees(searchTerm, callback) {
+  console.log("Searching employees")
+  $.ajax({
+    url: "libs/php/searchAllEmployees.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      searchTerm: searchTerm
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+
+        console.log('Searched employees')
+        employees = result['data'];
+        callback(employees);
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+    }
+  });
+}
+
+// /* Following from bootstrap-menu detail-smart-hide*/
 // add padding top to show content behind navbar
 $('.container').css('padding-top', $('.navbar').outerHeight() + 'px')
 

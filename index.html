@@ -30,53 +30,28 @@
           <li class="nav-item">
             <a class="nav-link" href="/company-directory/locations.html">Locations</a>
           </li>
-          <li class="nav-item">
-            <div class="nav-link" id="newEmployee">New Employee</div>
-          </li>
         </ul>
-      </div>
-      <!-- <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <form class="form-inline navbar-right">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        <ul class="navbar-nav nav-toolbar">
+          <li class="nav-item ">
+            <form class="form-inline">
+              <img id="newEmployee" src="./libs/icons/plus-24.svg" class="mr-2">
+              <img id="showEmployeeFilterButton" src="./libs/icons/filter-24.svg" class="mr-2">
+              <img src="./libs/icons/search-24.svg" class="mr-2">
+              <input id="searchEmployeesInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             </form>
           </li>
         </ul>
-      </div> -->
-        <form class="form-inline navbar-right">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+      </div>
     </nav>
-
-
-<!-- <nav class="navbar smart-scroll navbar-expand-lg navbar-dark bg-primary">
-  <a class="navbar-brand" href="#">Brand</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="main_nav">
-    <ul class="navbar-nav">
-      <li class="nav-item active"> <a class="nav-link" href="#">Home </a> </li>
-      <li class="nav-item"><a class="nav-link" href="#"> About </a></li>
-      <li class="nav-item"><a class="nav-link" href="#"> Services </a></li>
-    </ul>
-    <form class="form-inline">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-  </div>
-</nav> -->
 
     <div class="container">
       <h3>Company Employees</h3>
+      <img href="./libs/icons/filter-24.svg">
       <div id="company-employees">
       </div>
     </div>
 
-    <button id="showEmployeeFilterButton" class="btn btn-primary">Filter Employees</button>
+    <!-- <button id="showEmployeeFilterButton" class="btn btn-primary">Filter Employees</button> -->
 
     <div class="modal fade" id="informationModal" tabindex="-1" role="dialog" aria-labelledby="informationModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -90,8 +65,7 @@
           <div id="informationModalBody">
           </div>
           <div class="modal-footer">
-            <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="employeeUpdateButton" onclick="">Update</button> -->
+            <!-- Added by JS -->
           </div>
         </div>
       </div>
