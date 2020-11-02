@@ -14,7 +14,37 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar smart-scroll navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="/company-directory/">Employees<span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/company-directory/departments.html">Departments</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/company-directory/locations.html">Locations</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav nav-toolbar">
+          <li class="nav-item ">
+            <form class="form-inline">
+              <img id="newEmployee" src="./libs/icons/plus-24.svg" class="mr-2">
+              <img id="showEmployeeFilterButton" src="./libs/icons/filter-24.svg" class="mr-2">
+              <img src="./libs/icons/search-24.svg" class="mr-2">
+              <input id="searchEmployeesInput" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            </form>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="#">Navbar</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -44,7 +74,7 @@
           </li>
         </ul>
       </div>
-    </nav>
+    </nav> -->
 
     <div class="container">
       <h3>Company Locations</h3>

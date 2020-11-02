@@ -126,6 +126,7 @@ export function updateEmployee(employeeId, departments, locations) {
             });
           $("#department").val(employee['departmentID']).change();
           $("#employeeTable").append('<tr><td><label for="location">Location</td><td><select id="location" name="location" value="' + employee['locationID'] + '"></td></tr>');
+            $("#location").append('<option value="home">Home address</option>');
             locations.forEach(function(location) {
               $("#location").append('<option value="' + location['id']  + '">' + location['name'] + '</option>');
             });

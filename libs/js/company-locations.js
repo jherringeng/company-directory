@@ -104,3 +104,25 @@ function employeeSaveUpdate(employeeId) {
     }
   });
 }
+
+// /* Following from bootstrap-menu detail-smart-hide*/
+// add padding top to show content behind navbar
+$('.container').css('padding-top', $('.navbar').outerHeight() + 'px')
+
+var last_scroll_top = 0;
+var scroll_top = $(this).scrollTop();
+
+// detect scroll top or down
+if ($('.smart-scroll').length > 0) { // check if element exists
+
+    $(window).on('scroll', function() {
+        scroll_top = $(this).scrollTop();
+        if(scroll_top < last_scroll_top) {
+            $('.smart-scroll').removeClass('scrolled-down').addClass('scrolled-up');
+        }
+        else {
+            $('.smart-scroll').removeClass('scrolled-up').addClass('scrolled-down');
+        }
+        last_scroll_top = scroll_top;
+    });
+}

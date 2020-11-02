@@ -143,7 +143,7 @@ $(document).on('submit', '#updateEmployeeModalForm', function () {
 });
 
 function employeeSaveUpdate(employeeId) {
-  console.log("Saving update to employee")
+  console.log("Saving update to employee");
 
   $.ajax({
     url: "libs/php/updateEmployee.php",
@@ -381,3 +381,15 @@ if ($('.smart-scroll').length > 0) { // check if element exists
         last_scroll_top = scroll_top;
     });
 }
+
+$('.navbar-collapse').on('shown.bs.collapse', function () {
+  var containerPadding = $('.navbar').outerHeight() + 'px';
+  $('.container').animate({paddingTop: containerPadding}, 150);
+  // $('.container').css('padding-top', $('.navbar').outerHeight() + 'px')
+})
+
+$('.navbar-collapse').on('hidden.bs.collapse', function () {
+  var containerPadding = $('.navbar').outerHeight() + 'px';
+  $('.container').animate({paddingTop: containerPadding}, 150);
+  // $('.container').css('padding-top', $('.navbar').outerHeight() + 'px')
+})
