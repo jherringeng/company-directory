@@ -65,7 +65,7 @@ $(document).on('click', '#employeeUpdateButton', function () {
   updateEmployee($(this).data("id"), departments, locations);
 });
 
-$(document).on('click', '#employeeSaveUpdateButton', function () {
+$(document).on('submit', '#updateEmployeeModalForm', function () {
   employeeSaveUpdate($(this).data("id"));
 });
 
@@ -94,11 +94,6 @@ function employeeSaveUpdate(employeeId) {
         var employee = result['data'][0];
         displayEmployeeInfoModal(employee);
 
-        // $('#employee' + employee['id'] + ' .employeeName').html('<b>' + employee['firstName'] + ' ' + employee['lastName'] + '</b>')
-        // $('#employee' + employee['id'] + ' .employeeTitle').html(employee['jobTitle']);
-        // $('#employee' + employee['id'] + ' .employeeEmail').html(employee['email']);
-        // $('#employee' + employee['id'] + ' .employeeDepartment').html(employee['department']);
-        // $('#employee' + employee['id'] + ' .employeeLocation').html(employee['location']);
         $('#employee' + employee['id']).html(employee['firstName'] + ' ' + employee['lastName'])
 
       }

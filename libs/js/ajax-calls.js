@@ -112,27 +112,30 @@ export function updateEmployee(employeeId, departments, locations) {
 
     		$("#informationModalLabel").html('Employee Update');
         $("#informationModalBody").html("");
-        $("#informationModalBody").append('<table id="employeeTable" class="table">');
 
-        $("#employeeTable").append('<tr><td><label for="fname">First name</label></td><td><input type="text" id="fname" name="fname" value="' + employee['firstName'] + '"></td></tr>');
-        $("#employeeTable").append('<tr><td><label for="lname">Last Name</td><td><input type="text" id="lname" name="lname" value="' + employee['lastName'] + '"></td></tr>');
-        $("#employeeTable").append('<tr><td><label for="title">Job Title</td><td><input type="text" id="title" name="title" value="' + employee['jobTitle'] + '"></td></tr>');
-        $("#employeeTable").append('<tr><td><label for="email">Email</td><td><input type="email" id="email" name="email" value="' + employee['email'] + '"></td></tr>');
-        $("#employeeTable").append('<tr><td><label for="department">Department</td><td><select id="department" name="department" value="' + employee['departmentID']  + '"></td></tr>');
-        departments.forEach(function(department) {
-          $("#department").append('<option value="' + department['id'] + '">' + department['name'] + '</option>');
-        });
-        $("#department").val(employee['departmentID']).change();
-        $("#employeeTable").append('<tr><td><label for="location">Location</td><td><select id="location" name="location" value="' + employee['locationID'] + '"></td></tr>');
-        locations.forEach(function(location) {
-          $("#location").append('<option value="' + location['id']  + '">' + location['name'] + '</option>');
-        });
+        $("#informationModalBody").append('<form id="updateEmployeeModalForm" data-id="' +  employee['id'] + '" onsubmit="return false">');
+        $("#updateEmployeeModalForm").append('<table id="employeeTable" class="table">');
+
+          $("#employeeTable").append('<tr><td><label for="fname">First name</label></td><td><input type="text" id="fname" name="fname" value="' + employee['firstName'] + '" required></td></tr>');
+          $("#employeeTable").append('<tr><td><label for="lname">Last Name</td><td><input type="text" id="lname" name="lname" value="' + employee['lastName'] + '" required></td></tr>');
+          $("#employeeTable").append('<tr><td><label for="title">Job Title</td><td><input type="text" id="title" name="title" value="' + employee['jobTitle'] + '" required></td></tr>');
+          $("#employeeTable").append('<tr><td><label for="email">Email</td><td><input type="email" id="email" name="email" value="' + employee['email'] + '" required></td></tr>');
+          $("#employeeTable").append('<tr><td><label for="department">Department</td><td><select id="department" name="department" value="' + employee['departmentID']  + '"></td></tr>');
+            departments.forEach(function(department) {
+              $("#department").append('<option value="' + department['id'] + '">' + department['name'] + '</option>');
+            });
+          $("#department").val(employee['departmentID']).change();
+          $("#employeeTable").append('<tr><td><label for="location">Location</td><td><select id="location" name="location" value="' + employee['locationID'] + '"></td></tr>');
+            locations.forEach(function(location) {
+              $("#location").append('<option value="' + location['id']  + '">' + location['name'] + '</option>');
+            });
         $("#location").val(employee['locationID']).change();
+
+        $("#updateEmployeeModalForm").append('<input type="submit" class="btn btn-primary float-right">');
+        $("#updateEmployeeModalForm").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
 
         // Add buttons to modal footer
         $('.modal-footer').html("");
-        $('.modal-footer').append('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>')
-        $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeSaveUpdateButton" data-id="' + employee['id'] + '">Save Changes</button>')
 
         $('#informationModal').modal('show');
 
