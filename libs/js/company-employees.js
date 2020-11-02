@@ -1,26 +1,8 @@
 import { getAllDepartments, getAllLocations, getEmployee, updateEmployee} from './ajax-calls.js';
 import { displayEmployeeInfoModal } from './display-functions.js';
 
-var employees, departments, locations, departmentManager = {};
-
-// Callback functions to set global variables - passed to ajax-calls
-function setDepartments(departmentsInput) {
-  departments = departmentsInput;
-  console.log(departments);
-  departments.forEach(function(department) {
-    if (department['managerFirstName'] == null || department['managerLastName'] == null) {
-      departmentManager[department['id']] = "No manager";
-    } else {
-      departmentManager[department['id']] = department['managerFirstName'] + ' ' + department['managerLastName'];
-    }
-  })
-  console.log(departmentManager)
-}
-
-function setLocations(locationsInput) {
-  locations = locationsInput;
-  console.log(locations);
-}
+var employees, departments, locations;
+var departmentManager = {}, departmentManagerId = {}, locationManager = {};
 
 // Get information from database once loaded
 $( document ).ready(function() {
@@ -64,12 +46,21 @@ function displayEmployeePageData(tablesInput) {
   departments.forEach(function(department) {
     if (department['managerFirstName'] == null || department['managerLastName'] == null) {
       departmentManager[department['id']] = "No manager";
+      departmentManagerId[department['id']] = null;
     } else {
       departmentManager[department['id']] = department['managerFirstName'] + ' ' + department['managerLastName'];
+      departmentManagerId[department['id']] = department['departmentManager'];
     }
-  })
+  });
   console.log(departments)
   locations = tablesInput['locations'];
+  locations.forEach(function(location) {
+    if (location['managerFirstName'] == null || location['managerLastName'] == null) {
+      locationManager[location['id']] = "No manager";
+    } else {
+      locationManager[location['id']] = location['managerFirstName'] + ' ' + location['managerLastName'];
+    }
+  });
   console.log(locations)
 
   employees = tablesInput['employees'];
@@ -119,6 +110,15 @@ function displayAllEmployees(employees) {
     $("#company-employees").append('<div id="employee' + employee['id'] + '" class ="employee border border-primary" data-id="' + employee['id'] + '">'); // onclick="getEmployee(' + employee['id'] + ')"
     $("#employee" + employee['id']).append('<div class="employeeName employee-info"><b>' + employee['firstName'] + ' ' + employee['lastName'] + '</b></div>');
     $("#employee" + employee['id']).append('<div class="employeeTitle employee-info">' + employee['jobTitle'] + '</div>');
+    var managerName;
+    if (employee['jobTier'] == 3) {
+      managerName = departmentManager[employee['departmentID']];
+    } else if (employee['jobTier'] == 1) {
+      managerName = "N/A";
+    }
+    else {
+      managerName = locationManager[employee['locationID']];
+    }
     $("#employee" + employee['id']).append('<div class="employeeManager employee-info">' + departmentManager[employee['departmentID']] + '</div>');
     $("#employee" + employee['id']).append('<div class="employeeDepartment employee-info">' + employee['department'] + '</div>');
     $("#employee" + employee['id']).append('<div class="employeeLocation employee-info">' + employee['location'] + '</div>');
@@ -188,15 +188,21 @@ $(document).on('click', '#newEmployee', function () {
   openNewEmployeeModal();
 });
 
+function showValues(){
+  console.log("Showing values");
+}
+
 function openNewEmployeeModal() {
   $("#informationModalLabel").html('Employee Information');
   $("#informationModalBody").html("");
-  $("#informationModalBody").append('<table id="employeeTable" class="table">');
 
-  $("#employeeTable").append('<tr><td><label for="fname">First name</label></td><td><input type="text" id="fname" name="fname" value=""></td></tr>');
-  $("#employeeTable").append('<tr><td><label for="lname">Last Name</td><td><input type="text" id="lname" name="lname" value=""></td></tr>');
-  $("#employeeTable").append('<tr><td><label for="title">Job Title</td><td><input type="text" id="title" name="title" value=""></td></tr>');
-  $("#employeeTable").append('<tr><td><label for="email">Email</td><td><input type="email" id="email" name="email" value=""></td></tr>');
+  $("#informationModalBody").append('<form id="informationModalForm" onsubmit="return false">');
+  $("#informationModalForm").append('<table id="employeeTable" class="table">');
+
+  $("#employeeTable").append('<tr><td><label for="fname">First name</label></td><td><input type="text" id="fname" name="fname" value="" pattern="[A-Za-z ]+" required></td></tr>');
+  $("#employeeTable").append('<tr><td><label for="lname">Last Name</td><td><input type="text" id="lname" name="lname" value="" pattern="[A-Za-z ]+" required></td></tr>');
+  $("#employeeTable").append('<tr><td><label for="title">Job Title</td><td><input type="text" id="title" name="title" value="" pattern="[A-Za-z ]+" required></td></tr>');
+  $("#employeeTable").append('<tr><td><label for="email">Email</td><td><input type="email" id="email" name="email" value="" required></td></tr>');
   $("#employeeTable").append('<tr><td><label for="department">Department</td><td><select id="department" name="department" value=""></td></tr>');
   departments.forEach(function(department) {
     $("#department").append('<option value="' + department['id'] + '">' + department['name'] + '</option>');
@@ -206,18 +212,57 @@ function openNewEmployeeModal() {
     $("#location").append('<option value="' + location['id']  + '">' + location['name'] + '</option>');
   });
 
+  $("#employeeTable").append('<tr><td><label for="location">Location</td><td><input type="submit"></td></tr>');
+
   // Add buttons to modal footer
   $('.modal-footer').html("");
   $('.modal-footer').append('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>')
   $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeSaveNewButton" data-id="">Save employee</button>')
+  $('.modal-footer').append('<input type="submit">')
 
   $('#informationModal').modal('show');
 
 }
 
+// function openNewEmployeeModal() {
+//   $("#informationModalLabel").html('Employee Information');
+//   $("#informationModalBody").html("");
+//
+//   $("#informationModalBody").append('<form id="informationModalForm" onsubmit="showValues()">');
+//   $("#informationModalForm").append('<table id="employeeTable" class="table">');
+//
+//   $("#employeeTable").append('<tr><td><label for="fname">First name</label></td><td><input type="text" id="fname" name="fname" value="" pattern="[A-Za-z]" required></td></tr>');
+//   $("#employeeTable").append('<tr><td><label for="lname">Last Name</td><td><input type="text" id="lname" name="lname" value="" pattern="[A-Za-z]" required></td></tr>');
+//   $("#employeeTable").append('<tr><td><label for="title">Job Title</td><td><input type="text" id="title" name="title" value="" pattern="[A-Za-z]" required></td></tr>');
+//   $("#employeeTable").append('<tr><td><label for="email">Email</td><td><input type="email" id="email" name="email" value="" pattern="[A-Za-z]" required></td></tr>');
+//   $("#employeeTable").append('<tr><td><label for="department">Department</td><td><select id="department" name="department" value=""></td></tr>');
+//   departments.forEach(function(department) {
+//     $("#department").append('<option value="' + department['id'] + '">' + department['name'] + '</option>');
+//   });
+//   $("#employeeTable").append('<tr><td><label for="location">Location</td><td><select id="location" name="location" value=""></td></tr>');
+//   locations.forEach(function(location) {
+//     $("#location").append('<option value="' + location['id']  + '">' + location['name'] + '</option>');
+//   });
+//
+//   // Add buttons to modal footer
+//   $('.modal-footer').html("");
+//   $('.modal-footer').append('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>')
+//   $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeSaveNewButton" data-id="">Save employee</button>')
+//   $('.modal-footer').append('<input type="submit">')
+//
+//
+//   $('#informationModal').modal('show');
+//
+// }
+
 // Event listener for employee class - gets employee from database
 $(document).on('click', '#employeeSaveNewButton', function () {
-  saveNewEmployee($(this).data("id"));
+  saveNewEmployee();
+});
+
+// Event listener for employee class - gets employee from database
+$(document).on('submit', '#informationModalForm', function () {
+  saveNewEmployee();
 });
 
 function saveNewEmployee() {
@@ -363,15 +408,12 @@ var scroll_top = $(this).scrollTop();
 if ($('.smart-scroll').length > 0) { // check if element exists
 
     $(window).on('scroll', function() {
-        console.log("Scrolling, scrolling, scrolling...")
         scroll_top = $(this).scrollTop();
         if(scroll_top < last_scroll_top) {
             $('.smart-scroll').removeClass('scrolled-down').addClass('scrolled-up');
-            console.log("Scroll up")
         }
         else {
             $('.smart-scroll').removeClass('scrolled-up').addClass('scrolled-down');
-            console.log("Scroll down")
         }
         last_scroll_top = scroll_top;
     });

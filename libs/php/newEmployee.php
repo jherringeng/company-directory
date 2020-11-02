@@ -32,14 +32,14 @@
 
 	}
 
-	$query = "INSERT INTO personnel (lastName, firstName, jobTitle, email, departmentID) VALUES ('" . $_REQUEST['lastName'] . "', '" . $_REQUEST['firstName'] . "', '" . $_REQUEST['jobTitle'] . "', '" . $_REQUEST['email'] . "', '" . $_REQUEST['department'] . "')";
+	$query = "INSERT INTO personnel (lastName, firstName, jobTitle, email, departmentID, jobTier) VALUES ('" . $_REQUEST['lastName'] . "', '" . $_REQUEST['firstName'] . "', '" . $_REQUEST['jobTitle'] . "', '" . $_REQUEST['email'] . "', '" . $_REQUEST['department'] . "', '4')";
 	// $query = "INSERT INTO table_name (lastName, firstName, jobTitle, departmentID) VALUES ('Amy', 'Acker', 'Hottie', '1')";
 
 	$conn->query($query);
 
 	$last_id = $conn->insert_id;
 
-	$query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, d.name as department, d.id as departmentID, l.name as location, l.id as locationID FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) WHERE p.id = ' . $last_id . ' ORDER BY p.lastName, p.firstName, d.name, l.name';
+	$query = "SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, d.name as department, d.id as departmentID, l.name as location, l.id as locationID FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) WHERE p.id = $last_id ORDER BY p.lastName, p.firstName, d.name, l.name";
 
 	$result = $conn->query($query);
 

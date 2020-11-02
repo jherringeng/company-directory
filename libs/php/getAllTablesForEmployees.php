@@ -32,7 +32,7 @@
 
 	}
 
-	$query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, d.name as department, d.id as departmentID, l.name as location, l.id as locationID FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) ORDER BY p.lastName, p.firstName, d.name, l.name';
+	$query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.jobTier, d.name as department, d.id as departmentID, l.name as location, l.id as locationID FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) ORDER BY p.lastName, p.firstName, d.name, l.name';
 
 	$result = $conn->query($query);
 
@@ -63,7 +63,7 @@
 
 	// Get location table data
 	$query = 'SELECT * FROM location ORDER BY name';
-	$query = 'SELECT location.id, location.name, location.address, location.postcode, location.manager, personnel.firstName, personnel.lastName FROM location LEFT JOIN personnel ON location.manager=personnel.id ORDER BY location.name';
+	$query = 'SELECT location.id, location.name, location.address, location.postcode, location.manager, personnel.firstName as managerFirstName, personnel.lastName as managerLastName FROM location LEFT JOIN personnel ON location.manager=personnel.id ORDER BY location.name';
 	// $query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, d.name as department, d.id as departmentID, l.name as location, l.id as locationID FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) ORDER BY p.lastName, p.firstName, d.name, l.name';
 
 	$result = $conn->query($query);
