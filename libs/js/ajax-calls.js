@@ -148,3 +148,40 @@ export function updateEmployee(employeeId, departments, locations) {
   });
 
 }
+
+
+export function employeeSaveUpdate(employeeId, callback) {
+  console.log("Saving update to employee")
+
+  $.ajax({
+    url: "libs/php/updateEmployee.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      id: employeeId,
+      lastName: $('#lname').val(),
+      firstName: $('#fname').val(),
+      jobTitle: $('#title').val(),
+      email: $('#email').val(),
+      department: $('#department').val(),
+      location: $('#location').val()
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+
+        console.log("Updated Employee")
+        console.log();
+        var employee = result['data'][0];
+        callback(employee);
+
+        $('#employee' + employee['id']).html(employee['firstName'] + ' ' + employee['lastName'])
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+    }
+  });
+}

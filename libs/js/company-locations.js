@@ -1,4 +1,4 @@
-import { getAllTables, getEmployee, updateEmployee} from './ajax-calls.js';
+import { getAllTables, getEmployee, updateEmployee, employeeSaveUpdate} from './ajax-calls.js';
 import { displayEmployeeInfoModal } from './display-functions.js';
 
 var employees, departments, locations;
@@ -54,56 +54,24 @@ function displayLocationPageData(tablesInput) {
 
 // Event listeners for displaying and updating employees - ADD TO EACH PAGE SCRIPT
 $(document).on('click', '.employee-name', function () {
-  getEmployee($(this).data("id"), displayEmployeeInfoModal);
+  var employeeId = $(this).data("id");
+  getEmployee(employeeId, displayEmployeeInfoModal);
 });
 
 $(document).on('click', '.branchManager', function () {
-  getEmployee($(this).data("id"), displayEmployeeInfoModal);
+  var employeeId = $(this).data("id");
+  getEmployee(employeeId, displayEmployeeInfoModal);
 });
 
 $(document).on('click', '#employeeUpdateButton', function () {
-  updateEmployee($(this).data("id"), departments, locations);
+  var employeeId = $(this).data("id");
+  updateEmployee(employeeId, departments, locations);
 });
 
 $(document).on('submit', '#updateEmployeeModalForm', function () {
-  employeeSaveUpdate($(this).data("id"));
+  var employeeId = $(this).data("id");
+  employeeSaveUpdate(employeeId, displayEmployeeInfoModal);
 });
-
-function employeeSaveUpdate(employeeId) {
-  console.log("Saving update to employee")
-
-  $.ajax({
-    url: "libs/php/updateEmployee.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {
-      id: employeeId,
-      lastName: $('#lname').val(),
-      firstName: $('#fname').val(),
-      jobTitle: $('#title').val(),
-      email: $('#email').val(),
-      department: $('#department').val(),
-      location: $('#location').val()
-    },
-    success: function(result) {
-
-      if (result.status.name == "ok") {
-
-        console.log("Updated Employee")
-        console.log();
-        var employee = result['data'][0];
-        displayEmployeeInfoModal(employee);
-
-        $('#employee' + employee['id']).html(employee['firstName'] + ' ' + employee['lastName'])
-
-      }
-
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
-    }
-  });
-}
 
 // /* Following from bootstrap-menu detail-smart-hide*/
 // add padding top to show content behind navbar
