@@ -32,7 +32,8 @@
 
 	}
 
-	$query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.jobTier, d.name as department, d.id as departmentID, l.name as location, l.id as locationID FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) ORDER BY p.lastName, p.firstName, d.name, l.name';
+	// $query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.jobTier, d.name as department, d.id as departmentID, l.name as location, l.id as locationID, , p.currentLocation as currentLocationId FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID)  ORDER BY p.lastName, p.firstName, d.name, l.name';
+	$query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.jobTier, p.currentLocationId, d.name as department, d.id as departmentID, l.name as location, l.id as locationID, p.currentLocationId, p.status, s.name FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = p.currentLocationId) LEFT JOIN status s ON (s.id = p.status) ORDER BY p.lastName, p.firstName, d.name, l.name';
 
 	$result = $conn->query($query);
 
@@ -124,6 +125,37 @@
 	}
 
 	$output['data']['departments'] = $data;
+
+
+	$query = 'SELECT * FROM status';
+
+	$result = $conn->query($query);
+
+	if (!$result) {
+
+		$output['status']['code'] = "400";
+		$output['status']['name'] = "executed";
+		$output['status']['description'] = "query failed";
+		$output['data'] = [];
+
+		mysqli_close($conn);
+
+		echo json_encode($output);
+
+		exit;
+
+	}
+
+   	$data = [];
+
+	while ($row = mysqli_fetch_assoc($result)) {
+
+		array_push($data, $row);
+
+	}
+
+	$output['data']['status'] = $data;
+
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";

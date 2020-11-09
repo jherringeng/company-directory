@@ -1,8 +1,9 @@
 import { getAllDepartments, getAllLocations, getEmployee, updateEmployee} from './ajax-calls.js';
 import { displayEmployeeInfoModal } from './display-functions.js';
 
-var employees, departments, locations;
+var employees, departments, locations, statuses;
 var departmentManager = {}, departmentManagerId = {}, locationManager = {};
+var departmentLocation = {}, departmentLocationId = {};
 
 // Get information from database once loaded
 $( document ).ready(function() {
@@ -44,6 +45,10 @@ function displayEmployeePageData(tablesInput) {
 
   departments = tablesInput['departments'];
   departments.forEach(function(department) {
+
+    departmentLocation[department['id']] = department['location'];
+    departmentLocationId[department['id']] = department['locationID'];
+
     if (department['managerFirstName'] == null || department['managerLastName'] == null) {
       departmentManager[department['id']] = "No manager";
       departmentManagerId[department['id']] = null;
@@ -62,6 +67,8 @@ function displayEmployeePageData(tablesInput) {
     }
   });
   console.log(locations)
+
+  statuses = tablesInput['status']
 
   employees = tablesInput['employees'];
   displayAllEmployees(employees)
@@ -123,6 +130,10 @@ function displayAllEmployees(employees) {
     $("#employee" + employee['id']).append('<div class="employeeDepartment employee-info">' + employee['department'] + '</div>');
     $("#employee" + employee['id']).append('<div class="employeeLocation employee-info">' + employee['location'] + '</div>');
 
+    if(employee['status'] != 1) {
+      $("#employee" + employee['id']).addClass( "absent-employee" );
+    }
+
   })
 
   $('.container').css('height', 'auto');
@@ -135,7 +146,7 @@ $(document).on('click', '.employee', function () {
 
 // See ajax calls for function
 $(document).on('click', '#employeeUpdateButton', function () {
-  updateEmployee($(this).data("id"), departments, locations);
+  updateEmployee($(this).data("id"), departments, locations, statuses);
 });
 
 $(document).on('submit', '#updateEmployeeModalForm', function () {
@@ -156,7 +167,8 @@ function employeeSaveUpdate(employeeId) {
       jobTitle: $('#title').val(),
       email: $('#email').val(),
       department: $('#department').val(),
-      location: $('#location').val()
+      locationId: $('#location').val(),
+      status: $('#status').val()
     },
     success: function(result) {
 
@@ -185,7 +197,7 @@ function employeeSaveUpdate(employeeId) {
 }
 
 // Event listener for employee class - gets employee from database
-$(document).on('click', '#newEmployee', function () {
+$(document).on('click', '.newEmployee', function () {
   openNewEmployeeModal();
 });
 
@@ -209,23 +221,44 @@ function openNewEmployeeModal() {
       departments.forEach(function(department) {
         $("#department").append('<option value="' + department['id'] + '">' + department['name'] + '</option>');
       });
+    $("#employeeTable").append('<tr><td>Base Location</td><td id="baseLocation"></td></tr>');
     $("#employeeTable").append('<tr><td><label for="location">Location</td><td><select id="location" name="location" value=""></td></tr>');
       locations.forEach(function(location) {
         $("#location").append('<option value="' + location['id']  + '">' + location['name'] + '</option>');
       });
 
+  updateLocationToDepartment();
+
   $("#informationModalForm").append('<input type="submit" class="btn btn-primary float-right">');
   $("#informationModalForm").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
 
   // Add buttons to modal footer
-  $('.modal-footer').html("");
+  $('.modal-footer').html();
+  $('.modal-footer').hide();
 
   $('#informationModal').modal('show');
 
 }
+
+$(document).on('change', '#department', function () {
+
+  updateLocationToDepartment();
+
+});
+
+function updateLocationToDepartment() {
+  var departmentSelected = $('#department').val();
+  $('#baseLocation').html( departmentLocation[departmentSelected] );
+  console.log(departmentLocationId)
+  $('#location').val( departmentLocationId[departmentSelected] ).change();
+}
+
+
 // Event listener for new employee modal - adds employee to database
 $(document).on('submit', '#informationModalForm', function () {
+
   saveNewEmployee();
+
 });
 
 function saveNewEmployee() {
@@ -263,7 +296,7 @@ function saveNewEmployee() {
 }
 
 // Event listener for employee class - gets employee from database
-$(document).on('click', '#showEmployeeFilterButton', function () {
+$(document).on('click', '.showEmployeeFilterButton', function () {
   employeeFilterModal();
 });
 
@@ -287,9 +320,9 @@ function employeeFilterModal() {
     });
 
   // Add buttons to modal footer
-  $('.modal-footer').html("");
-  $('.modal-footer').append('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>')
-  $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeFilterButton" data-id="">Filter employees</button>')
+  $('.modal-footer').html("").show();
+  $('.modal-footer').append('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>').show();
+  $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeFilterButton" data-id="">Filter employees</button>').show();
 
   $('#informationModal').modal('show');
 }

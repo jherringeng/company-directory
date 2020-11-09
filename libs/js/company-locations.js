@@ -19,6 +19,9 @@ function displayLocationPageData(tablesInput) {
 
   // Adds locations then departments in that location then employees in that department
   locations.forEach(function(location) {
+    if (location['id'] <= 0) {
+      return;
+    }
     var locationIdTag = '#location-' + location['id'];
     $('#company-locations').append('<div id="location-' + location['id'] + '" class="border border-primary location"></div>');
     $(locationIdTag).append('<div class="location-name"><h3>' + location['name'] + '</h3></div>');

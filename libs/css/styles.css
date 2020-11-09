@@ -10,6 +10,15 @@ div .nav-link:hover {
   cursor: pointer;
 }
 
+table {
+  width: 100%;
+}
+
+.table td {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
 /* Following from bootstrap-menu */
 .smart-scroll{
   position: fixed;
@@ -39,6 +48,7 @@ div .nav-link:hover {
     display: block;
     overflow: auto;
     height: 100vh;
+    padding: 16px;
 }
 
 .employee {
@@ -47,6 +57,10 @@ div .nav-link:hover {
   flex-wrap: wrap;
   padding: 4px 0px;
   margin: 4px 0px;
+}
+
+.employee:hover {
+  cursor: pointer;
 }
 
 .location {
@@ -94,6 +108,14 @@ div .nav-link:hover {
   background-color: #CCC;
 }
 
+.employee:nth-child(even) {
+  background-color: #F7F7F9;
+}
+
+.absent-employee {
+  background-color: #f8d7da !important;
+}
+
 .employee-info{
   width: 20%;
   padding: 3px;
@@ -110,10 +132,18 @@ div .nav-link:hover {
   float: right;
 }
 
+.nav-toolbar-small {
+  display: none;
+}
+
 @media only screen and (max-width: 600px) {
   .employee-info{
     width: 50%;
     padding: 3px;
+  }
+
+  .employeeName{
+    width: 100%;
   }
 
   .location-show-employees {
@@ -124,5 +154,13 @@ div .nav-link:hover {
   .department-show-employees {
     width: 100%;
     float: inherit;
+  }
+
+  .nav-toolbar-small {
+    display: block;
+  }
+
+  .nav-toolbar-icon {
+    display: none;
   }
 }

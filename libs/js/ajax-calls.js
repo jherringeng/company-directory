@@ -92,7 +92,7 @@ export function getEmployee(employeeId, callback) {
 
 }
 
-export function updateEmployee(employeeId, departments, locations) {
+export function updateEmployee(employeeId, departments, locations, statuses) {
 
   console.log("Update employee")
 
@@ -126,17 +126,25 @@ export function updateEmployee(employeeId, departments, locations) {
             });
           $("#department").val(employee['departmentID']).change();
           $("#employeeTable").append('<tr><td><label for="location">Location</td><td><select id="location" name="location" value="' + employee['locationID'] + '"></td></tr>');
-            $("#location").append('<option value="home">Home address</option>');
             locations.forEach(function(location) {
               $("#location").append('<option value="' + location['id']  + '">' + location['name'] + '</option>');
             });
+          $("#location").val(employee['currentLocationID']).change();
+
+          $("#employeeTable").append('<tr><td><label for="status">Status</td><td><select id="status" name="status" value="' + employee['status'] + '"></td></tr>');
+            statuses.forEach(function(status) {
+              $("#status").append('<option value="' + status['id']  + '">' + status['name'] + '</option>');
+            });
+          $("#status").val(employee['status']).change();
+
+
         $("#location").val(employee['locationID']).change();
 
         $("#updateEmployeeModalForm").append('<input type="submit" class="btn btn-primary float-right">');
         $("#updateEmployeeModalForm").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
 
         // Add buttons to modal footer
-        $('.modal-footer').html("");
+        $('.modal-footer').html("").hide();
 
         $('#informationModal').modal('show');
 
@@ -152,6 +160,7 @@ export function updateEmployee(employeeId, departments, locations) {
 
 export function employeeSaveUpdate(employeeId, callback) {
   console.log("Saving update to employee")
+  console.log($('#location').val())
 
   $.ajax({
     url: "libs/php/updateEmployee.php",
@@ -164,7 +173,8 @@ export function employeeSaveUpdate(employeeId, callback) {
       jobTitle: $('#title').val(),
       email: $('#email').val(),
       department: $('#department').val(),
-      location: $('#location').val()
+      locationId: $('#location').val(),
+      status: $('#status').val(),
     },
     success: function(result) {
 

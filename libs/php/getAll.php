@@ -32,7 +32,8 @@
 
 	}
 
-	$query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, d.name as department, d.id as departmentID, l.name as location, l.id as locationID FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) ORDER BY p.lastName, p.firstName, d.name, l.name';
+	// $query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.currentLocationId, d.name as department, d.id as departmentID, l.name as location, l.id as locationID FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = p.currentLocationId) ORDER BY p.lastName, p.firstName, d.name, l.name';
+	$query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.jobTier, p.currentLocationId, d.name as department, d.id as departmentID, l.name as location, l.id as locationID, p.currentLocationId, p.status, s.name FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = p.currentLocationId) LEFT JOIN status s ON (s.id = p.status) ORDER BY p.lastName, p.firstName, d.name, l.name';
 	// $query = 'SELECT * FROM personnel'
 
 	$result = $conn->query($query);

@@ -32,7 +32,7 @@
 
 	}
 
-	$query = "INSERT INTO personnel (lastName, firstName, jobTitle, email, departmentID, jobTier) VALUES ('" . $_REQUEST['lastName'] . "', '" . $_REQUEST['firstName'] . "', '" . $_REQUEST['jobTitle'] . "', '" . $_REQUEST['email'] . "', '" . $_REQUEST['department'] . "', '4')";
+	$query = "INSERT INTO personnel (lastName, firstName, jobTitle, email, departmentID) VALUES ('" . $_REQUEST['lastName'] . "', '" . $_REQUEST['firstName'] . "', '" . $_REQUEST['jobTitle'] . "', '" . $_REQUEST['email'] . "', '" . $_REQUEST['department'] . "')";
 	// $query = "INSERT INTO table_name (lastName, firstName, jobTitle, departmentID) VALUES ('Amy', 'Acker', 'Hottie', '1')";
 
 	$conn->query($query);

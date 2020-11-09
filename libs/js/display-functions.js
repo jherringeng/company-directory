@@ -11,7 +11,7 @@ export function displayEmployeeInfoModal(employee) {
     $("#employeeTable").append('<tr><td>Location</td><td>' + employee['location'] + '</td></tr>');
 
     // Add buttons to modal footer
-    $('.modal-footer').html("");
+    $('.modal-footer').html("").show();
     $('.modal-footer').append('<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>')
     $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeUpdateButton" data-id="' + employee['id'] + '">Update</button>')
 
