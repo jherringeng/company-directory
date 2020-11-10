@@ -37,7 +37,7 @@
 	$query = "UPDATE personnel SET lastName='$lastName', firstName='$firstName', jobTitle='$jobTitle', email='$email', departmentID='$departmentID', jobTier = '$jobTier', currentLocationId = '$locationId', status = '$status' WHERE id='$id'";
 	$result = $conn->query($query);
 
-	$query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.currentLocationId, d.name as department, d.id as departmentID, l.name as location, l.id as locationID FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = p.currentLocationId) WHERE p.id = ' . $_REQUEST['id'] . ' ORDER BY p.lastName, p.firstName, d.name, l.name';
+	$query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.jobTier, p.currentLocationId, p.status, d.name as department, d.id as departmentID, d.locationID as baseLocationId, l.name as location, l.id as locationID, b.name as baseLocationName, s.name as statusName FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = p.currentLocationId) LEFT JOIN location b ON (b.id = d.locationID) LEFT JOIN status s ON (s.id = p.status) WHERE p.id = ' . $_REQUEST['id'] . ' ORDER BY p.lastName, p.firstName, d.name, l.name';
 	$result = $conn->query($query);
 
 	if (!$result) {

@@ -8,7 +8,9 @@ export function displayEmployeeInfoModal(employee) {
     $("#employeeTable").append('<tr><td>Job Title</td><td>' + employee['jobTitle'] + '</td></tr>');
     $("#employeeTable").append('<tr><td>Email</td><td>' + employee['email'] + '</td></tr>');
     $("#employeeTable").append('<tr><td>Department</td><td>' + employee['department'] + '</td></tr>');
+    $("#employeeTable").append('<tr><td>Based at</td><td>' + employee['baseLocationName'] + '</td></tr>');
     $("#employeeTable").append('<tr><td>Location</td><td>' + employee['location'] + '</td></tr>');
+    $("#employeeTable").append('<tr><td>Status</td><td>' + employee['statusName'] + '</td></tr>');
 
     // Add buttons to modal footer
     $('.modal-footer').html("").show();
@@ -16,9 +18,5 @@ export function displayEmployeeInfoModal(employee) {
     $('.modal-footer').append('<button type="button" class="btn btn-primary" id="employeeUpdateButton" data-id="' + employee['id'] + '">Update</button>')
 
     $('#informationModal').modal('show');
-
-}
-
-export function displayEmployeeUpdateModal(employee) {
 
 }

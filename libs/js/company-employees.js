@@ -210,8 +210,10 @@ function openNewEmployeeModal() {
   $("#informationModalBody").html("");
 
   // Constructs HTML for modal form
-  $("#informationModalBody").append('<form id="informationModalForm" onsubmit="return false">');
-  $("#informationModalForm").append('<table id="employeeTable" class="table">');
+  $('.modalForm').attr("id","newEmployeeModal");
+  $('.modalForm').attr("data-id", "" );
+
+  $("#informationModalBody").append('<table id="employeeTable" class="table">');
 
     $("#employeeTable").append('<tr><td><label for="fname">First name</label></td><td><input type="text" id="fname" name="fname" value="" pattern="[A-Za-z ]+" required></td></tr>');
     $("#employeeTable").append('<tr><td><label for="lname">Last Name</td><td><input type="text" id="lname" name="lname" value="" pattern="[A-Za-z ]+" required></td></tr>');
@@ -229,12 +231,11 @@ function openNewEmployeeModal() {
 
   updateLocationToDepartment();
 
-  $("#informationModalForm").append('<input type="submit" class="btn btn-primary float-right">');
-  $("#informationModalForm").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
-
   // Add buttons to modal footer
-  $('.modal-footer').html();
-  $('.modal-footer').hide();
+  $('.modal-footer').html("");
+  $(".modal-footer").append('<input type="submit" class="btn btn-primary float-right">');
+  $(".modal-footer").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
+  $('.modal-footer').show();
 
   $('#informationModal').modal('show');
 
@@ -255,7 +256,7 @@ function updateLocationToDepartment() {
 
 
 // Event listener for new employee modal - adds employee to database
-$(document).on('submit', '#informationModalForm', function () {
+$(document).on('submit', '#newEmployeeModal', function () {
 
   saveNewEmployee();
 

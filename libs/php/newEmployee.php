@@ -32,14 +32,19 @@
 
 	}
 
-	$query = "INSERT INTO personnel (lastName, firstName, jobTitle, email, departmentID) VALUES ('" . $_REQUEST['lastName'] . "', '" . $_REQUEST['firstName'] . "', '" . $_REQUEST['jobTitle'] . "', '" . $_REQUEST['email'] . "', '" . $_REQUEST['department'] . "')";
+	$lastName = $_REQUEST['lastName']; $firstName = $_REQUEST['firstName']; $jobTitle = $_REQUEST['jobTitle'];
+	$email = $_REQUEST['email']; $department = $_REQUEST['department']; $location = $_REQUEST['location'];
+
+	// $query = "INSERT INTO personnel (lastName, firstName, jobTitle, email, departmentID, currentLocationId) VALUES ('$_REQUEST['lastName']', '$_REQUEST['firstName']', '$_REQUEST['jobTitle']', '$_REQUEST['email']', '$_REQUEST['department']', '$_REQUEST['location']')";
+	$query = "INSERT INTO personnel (lastName, firstName, jobTitle, email, departmentID, currentLocationId, jobTier, status) VALUES ('$lastName', '$firstName', '$jobTitle', '$email', '$department', '$location', 4, 1)";
+	// $query = "INSERT INTO personnel (lastName, firstName, jobTitle, email, departmentID, currentLocationId, jobTier, status) VALUES ('$lastName', $firstName', 'H', 'aa@abc.com', '1', '1', 4, 1)";
 	// $query = "INSERT INTO table_name (lastName, firstName, jobTitle, departmentID) VALUES ('Amy', 'Acker', 'Hottie', '1')";
 
 	$conn->query($query);
 
 	$last_id = $conn->insert_id;
 
-	$query = "SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, d.name as department, d.id as departmentID, l.name as location, l.id as locationID FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) WHERE p.id = $last_id ORDER BY p.lastName, p.firstName, d.name, l.name";
+	$query = "SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.jobTier, p.currentLocationId, p.status, d.name as department, d.id as departmentID, d.locationID as baseLocationId, l.name as location, l.id as locationID, b.name as baseLocationName, s.name as statusName FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = p.currentLocationId) LEFT JOIN location b ON (b.id = d.locationID) LEFT JOIN status s ON (s.id = p.status) WHERE p.id = $last_id";
 
 	$result = $conn->query($query);
 

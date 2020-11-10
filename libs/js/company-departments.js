@@ -21,10 +21,21 @@ function displayDepartmentPageData(tablesInput) {
   // Adds locations then departments in that location then employees in that department
   departments.forEach(function(department) {
     var departmentIdTag = 'department-' + department['id'];
-    $('#company-departments').append('<div id="department-' + department['id'] + '" class="border border-primary location"></div>');
-    $('#' + departmentIdTag).append('<div class="department-name"><h3>' + department['name'] + '</h3><h5>Manager: ' + department['managerFirstName'] + ' ' + department['managerLastName'] + '</h5><h5>' + department['location'] + '</h5></div>');
-    var departmentEmployeesIdTag = 'department-employees' + department['id'];
+    $('#company-departments').append('<div id="department-' + department['id'] + '" class="border border-primary department"></div>');
+    $('#' + departmentIdTag).append('<div class="department-name"><h3>' + department['name'] + '</h3></div>');
+
+    var managerName;
+    if (department['managerFirstName'] == null || department['managerLastName'] == null) {
+      managerName = "No manager";
+    } else {
+      managerName = department['managerFirstName'] + ' ' + department['managerLastName'];
+    }
+    $('#' + departmentIdTag).append('<h5>Manager: ' + managerName + '</h5><h5>' + department['location'] + '</h5></div>');
+
+    // Button to toggle dropdown
     $('#' + departmentIdTag).append('<button data-toggle="collapse" data-target="#' + departmentEmployeesIdTag + '" class="btn btn-info department-show-employees">Show Employees</button>');
+    // Creates dropdown for containing employees
+    var departmentEmployeesIdTag = 'department-employees' + department['id'];
     $('#' + departmentIdTag).append('<div id="' + departmentEmployeesIdTag + '" class="department-employees collapse">');
     employees.forEach(function(employee) {
       if (employee['departmentID'] === department['id']) {

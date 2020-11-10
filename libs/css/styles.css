@@ -84,6 +84,11 @@ table {
   display: inline-block;
 }
 
+.department {
+  padding: 10px;
+  margin: 10px 0px;
+}
+
 .department-name {
   display: inline-block;
 }
