@@ -77,11 +77,11 @@ table {
 }
 
 .location-department-name {
-  display: inline-block;
+  display: block;
 }
 
 .location-department-name h4{
-  display: inline-block;
+  display: block;
 }
 
 .department {

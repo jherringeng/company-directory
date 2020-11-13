@@ -11,12 +11,16 @@ $( document ).ready(function() {
 
 // Callback for getAllTables sets and displays locations, departments and employees
 function displayDepartmentPageData(tablesInput) {
+
+  $('#company-departments').html('');
+  employees = {}
   // Set global variables
   locations = tablesInput['locations'];
   console.log(locations)
   departments = tablesInput['departments'];
   console.log(departments)
   employees = tablesInput['employees'];
+  console.log(employees)
   statuses = tablesInput['status'];
   console.log(statuses)
 
@@ -32,7 +36,7 @@ function displayDepartmentPageData(tablesInput) {
     } else {
       managerName = department['managerFirstName'] + ' ' + department['managerLastName'];
     }
-    $('#' + departmentIdTag).append('<h5>Manager: ' + managerName + '</h5>');
+    $('#' + departmentIdTag).append('<h5>Manager: <span class="employee-name btn btn-outline-dark"  data-id="' + department['departmentManager'] + '">' + managerName + '</span></h5>');
 
     $('#' + departmentIdTag).append('<div id="' + departmentIdTag + 'LastLine" class="department-lastline">');
     $('#' + departmentIdTag + 'LastLine').append('<h5>' + department['location'] + '</h5></div>');
@@ -46,9 +50,6 @@ function displayDepartmentPageData(tablesInput) {
     employees.forEach(function(employee) {
       if (employee['departmentID'] === department['id'] && employee['id'] != department['departmentManager']) {
         $('#' + departmentEmployeesIdTag).append( '<div id="employee' + employee['id'] + '" class="employee-name btn btn-outline-dark" data-id=' + employee['id'] + '>' + employee['firstName'] + ' ' + employee['lastName'] + '</div>');
-        if (employee['currentLocationId'] !== department['locationID']) {
-          $('#employee' + employee['id']).addClass('offsite-employee');
-        }
         if (employee['currentLocationId'] !== department['locationID']) {
           $('#employee' + employee['id']).addClass('offsite-employee');
         }
@@ -80,5 +81,6 @@ $(document).on('click', '#employeeUpdateButton', function () {
 
 $(document).on('submit', '#updateEmployeeModalForm', function () {
   var employeeId = $(this).data("id");
-  employeeSaveUpdate(employeeId, displayEmployeeInfoModal);
+  console.log($('#updateEmployeeModalForm').data("id"))
+  employeeSaveUpdate(employeeId, displayEmployeeInfoModal, getAllTables, displayDepartmentPageData);
 });

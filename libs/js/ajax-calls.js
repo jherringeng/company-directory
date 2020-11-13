@@ -9,6 +9,7 @@ export function getAllTables(callback) {
     success: function(result) {
 
       if (result.status.name == "ok") {
+        console.log(result['data'])
         callback(result['data']);
       }
 
@@ -152,6 +153,7 @@ export function updateEmployee(employeeId, departments, locations, statuses) {
         $('.modal-footer').html("").show();
 
           $(".modal-footer").append('<input type="submit" class="btn btn-primary float-right">');
+          $('.modal-footer').append('<button id="promoteEmployeeModal" type="button" class="btn btn-secondary float-right" data-id="' + employee['id'] + '">Promote</button>');
           $(".modal-footer").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
 
         $('#informationModal').modal('show');
@@ -166,7 +168,7 @@ export function updateEmployee(employeeId, departments, locations, statuses) {
 }
 
 
-export function employeeSaveUpdate(employeeId, callback) {
+export function employeeSaveUpdate(employeeId, modalCallback, updateCallback, displayCallback) {
   console.log("Saving update to employee")
   console.log($('#location').val())
 
@@ -189,17 +191,122 @@ export function employeeSaveUpdate(employeeId, callback) {
       if (result.status.name == "ok") {
 
         console.log("Updated Employee")
-        console.log();
         var employee = result['data'][0];
-        callback(employee);
+        modalCallback(employee);
 
-        $('#employee' + employee['id']).html(employee['firstName'] + ' ' + employee['lastName'])
+        // $('#employee' + employee['id']).html(employee['firstName'] + ' ' + employee['lastName'])
+        updateCallback(displayCallback)
 
       }
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("Request failed");
+    }
+  });
+}
+
+export function promoteEmployeeModal(employeeId, departments, locations) {
+  $("#informationModalLabel").html('Employee Promotion');
+  $("#informationModalBody").html("");
+
+  $('.modalForm').attr("id","promoteEmployeeModalForm");
+  $('.modalForm').attr("data-id", employeeId );
+
+  $("#informationModalBody").append('<table id="employeeTable" class="table">');
+
+  $("#employeeTable").append('<tr><td><label for="managerTier">Promote to: </td><td><select id="managerTier" name="managerTier" value=""></td></tr>')
+
+    $("#managerTier").append('<option value="depManager">Department Manager</option>');
+    $("#managerTier").append('<option value="locManager">Location Manager</option>');
+
+  $("#employeeTable").append('<tr><td><label for="locationManager">Available locations: </td><td><select id="locationManager" name="locationManager" value=""></td></tr>');
+    $("#locationManager").append('<option value="null">Please select a location</option>')
+    locations.forEach(function(location) {
+      if (location['manager'] == null && location['id'] > 0) {
+        $("#locationManager").append('<option value="' + location['id']  + '" name="' + location['name'] + '" required>' + location['name'] + '</option>');
+      }
+
+    });
+
+  $("#employeeTable").append('<tr><td><label for="departmentManager">Available Departments: </td><td><select id="departmentManager" name="departmentManager" value=""></td></tr>');
+    $("#departmentManager").append('<option value="null">Please select a department</option>')
+    departments.forEach(function(department) {
+      if (department['departmentManager'] == null) {
+        $("#departmentManager").append('<option value="' + department['id']  + '" name="' + department['name'] + '" required>' + department['name'] + '</option>');
+      }
+
+    });
+
+  $('.modal-footer').html("").show();
+
+    $(".modal-footer").append('<input type="submit" class="btn btn-primary float-right">');
+    $(".modal-footer").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
+
+  $('#informationModal').modal('show');
+
+}
+
+export function promoteEmployee(employeeId, modalCallback, updateCallback, displayCallback) { // 
+  console.log("Promoting employee")
+
+  var jobTier;
+
+  if ( $('#managerTier').val() == 'depManager') {
+    jobTier = 3;
+  } else {
+    jobTier = 2;
+  }
+
+  var departmentName = $('#departmentManager').find('option:selected').attr("name");
+  var locationName = $('#locationManager').find('option:selected').attr("name");
+
+  var department = parseInt($('#departmentManager').val());
+  var location = parseInt($('#locationManager').val());
+
+  // var data = {
+  //   id: employeeId,
+  //   promoteTo: $('#managerTier').val(),
+  //   department: department,
+  //   location: location,
+  //   departmentName: departmentName,
+  //   locationName: locationName,
+  //   jobTier: jobTier
+  // }
+
+  // console.log(data)
+
+  $.ajax({
+    url: "libs/php/promoteEmployee.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      id: employeeId,
+      promoteTo: $('#managerTier').val(),
+      department: department,
+      location: location,
+      departmentName: departmentName,
+      locationName: locationName,
+      jobTier: jobTier
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+
+        console.log("Promoted Employee")
+        console.log(result)
+        var employee = result['data'][0];
+        // getEmployee(employeeId, modalCallback)
+        modalCallback(employee)
+
+        updateCallback(displayCallback)
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed: " + textStatus + ' ' + errorThrown);
+      console.warn(jqXHR.responseText)
     }
   });
 }

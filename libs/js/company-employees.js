@@ -1,4 +1,4 @@
-import { getAllDepartments, getAllLocations, getEmployee, updateEmployee} from './ajax-calls.js';
+import { getAllDepartments, getAllLocations, getEmployee, updateEmployee, promoteEmployeeModal, promoteEmployee } from './ajax-calls.js';
 import { displayEmployeeInfoModal } from './display-functions.js';
 
 var employees, departments, locations, statuses;
@@ -147,6 +147,17 @@ $(document).on('click', '.employee', function () {
 // See ajax calls for function
 $(document).on('click', '#employeeUpdateButton', function () {
   updateEmployee($(this).data("id"), departments, locations, statuses);
+});
+
+$(document).on('submit', '#promoteEmployeeModalForm', function () {
+  var employeeId = $(this).data("id");
+  promoteEmployee(employeeId, displayEmployeeInfoModal, getAllEmployees, displayAllEmployees);
+});
+
+// Event listener for employee class - gets employee from database
+$(document).on('click', '#promoteEmployeeModal', function () {
+  var employeeId = $(this).data("id");
+  promoteEmployeeModal(employeeId, departments, locations);
 });
 
 $(document).on('submit', '#updateEmployeeModalForm', function () {
@@ -364,7 +375,6 @@ function getFilteredEmployees(callback) {
 // Event listener for employee class - gets employee from database
 $(document).on('keyup', '#searchEmployeesInput', 'input', function () {
   var searchTerm = $('#searchEmployeesInput').val();
-  console.log(searchTerm)
   searchAllEmployees(searchTerm, displayAllEmployees);
 });
 
