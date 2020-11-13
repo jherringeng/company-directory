@@ -51,7 +51,7 @@
 	$query = "UPDATE personnel SET jobTitle='$jobTitle', departmentID='$department', jobTier = '$jobTier' WHERE id='$id'";
 	$conn->query($query);
 
-	$query = "SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.jobTier, p.currentLocationId, p.status, d.name as department, d.id as departmentID, d.locationID as baseLocationId, l.name as location, l.id as locationID, b.name as baseLocationName, s.name as statusName FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = p.currentLocationId) LEFT JOIN location b ON (b.id = d.locationID) LEFT JOIN status s ON (s.id = p.status) WHERE p.id = '$id' ORDER BY p.lastName, p.firstName, d.name, l.name";
+	$query = 'SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.jobTier, p.currentLocationId, p.status, d.name as department, d.id as departmentID, d.locationID as baseLocationId, l.name as location, l.id as locationID, b.name as baseLocationName, s.name as statusName FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = p.currentLocationId) LEFT JOIN location b ON (b.id = d.locationID) LEFT JOIN status s ON (s.id = p.status) WHERE p.id = ' . $_REQUEST['id'] . ' ORDER BY p.lastName, p.firstName, d.name, l.name';
 
 	$result = $conn->query($query);
 
@@ -82,8 +82,7 @@
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
-	// $output['data'] = $data;
-	$output['data'] = $result;
+	$output['data'] = $data;
 
 	mysqli_close($conn);
 

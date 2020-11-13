@@ -220,8 +220,7 @@ export function promoteEmployeeModal(employeeId, departments, locations) {
     $("#managerTier").append('<option value="depManager">Department Manager</option>');
     $("#managerTier").append('<option value="locManager">Location Manager</option>');
 
-  $("#employeeTable").append('<tr><td><label for="locationManager">Available locations: </td><td><select id="locationManager" name="locationManager" value=""></td></tr>');
-    $("#locationManager").append('<option value="null">Please select a location</option>')
+  $("#employeeTable").append('<tr id="locationManagerRow"><td><label for="locationManager">Available locations: </td><td><select id="locationManager" name="locationManager" value=""></td></tr>');
     locations.forEach(function(location) {
       if (location['manager'] == null && location['id'] > 0) {
         $("#locationManager").append('<option value="' + location['id']  + '" name="' + location['name'] + '" required>' + location['name'] + '</option>');
@@ -229,8 +228,9 @@ export function promoteEmployeeModal(employeeId, departments, locations) {
 
     });
 
-  $("#employeeTable").append('<tr><td><label for="departmentManager">Available Departments: </td><td><select id="departmentManager" name="departmentManager" value=""></td></tr>');
-    $("#departmentManager").append('<option value="null">Please select a department</option>')
+  $('#locationManagerRow').hide();
+
+  $("#employeeTable").append('<tr id="departmentManagerRow"><td><label for="departmentManager">Available Departments: </td><td><select id="departmentManager" name="departmentManager" value=""></td></tr>');
     departments.forEach(function(department) {
       if (department['departmentManager'] == null) {
         $("#departmentManager").append('<option value="' + department['id']  + '" name="' + department['name'] + '" required>' + department['name'] + '</option>');
@@ -247,7 +247,7 @@ export function promoteEmployeeModal(employeeId, departments, locations) {
 
 }
 
-export function promoteEmployee(employeeId, modalCallback, updateCallback, displayCallback) { // 
+export function promoteEmployee(employeeId, modalCallback, updateCallback, displayCallback) { //
   console.log("Promoting employee")
 
   var jobTier;
@@ -296,6 +296,7 @@ export function promoteEmployee(employeeId, modalCallback, updateCallback, displ
         console.log("Promoted Employee")
         console.log(result)
         var employee = result['data'][0];
+        console.log(employee)
         // getEmployee(employeeId, modalCallback)
         modalCallback(employee)
 

@@ -160,6 +160,16 @@ $(document).on('click', '#promoteEmployeeModal', function () {
   promoteEmployeeModal(employeeId, departments, locations);
 });
 
+$(document).on('change', '#managerTier', function () {
+  if ($('#managerTier').val() == 'depManager') {
+    $('#departmentManagerRow').show();
+    $('#locationManagerRow').hide();
+  } else {
+    $('#departmentManagerRow').hide();
+    $('#locationManagerRow').show();
+  }
+});
+
 $(document).on('submit', '#updateEmployeeModalForm', function () {
   employeeSaveUpdate($(this).data("id"));
 });
