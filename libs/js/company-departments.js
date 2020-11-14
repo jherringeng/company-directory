@@ -1,4 +1,4 @@
-import { getAllTables, getEmployee, updateEmployee, employeeSaveUpdate} from './ajax-calls.js';
+import { getAllTables, getEmployee, updateEmployee, employeeSaveUpdate, promoteEmployeeModal, promoteEmployee} from './ajax-calls.js';
 import { displayEmployeeInfoModal } from './display-functions.js';
 
 var employees, departments, locations, statuses;
@@ -83,4 +83,25 @@ $(document).on('submit', '#updateEmployeeModalForm', function () {
   var employeeId = $(this).data("id");
   console.log($('#updateEmployeeModalForm').data("id"))
   employeeSaveUpdate(employeeId, displayEmployeeInfoModal, getAllTables, displayDepartmentPageData);
+});
+
+$(document).on('submit', '#promoteEmployeeModalForm', function () {
+  var employeeId = $(this).data("id");
+  promoteEmployee(employeeId, displayEmployeeInfoModal, getAllTables, displayDepartmentPageData);
+});
+
+// Event listener for employee class - gets employee from database
+$(document).on('click', '#promoteEmployeeModal', function () {
+  var employeeId = $(this).data("id");
+  promoteEmployeeModal(employeeId, departments, locations);
+});
+
+$(document).on('change', '#managerTier', function () {
+  if ($('#managerTier').val() == 'depManager') {
+    $('#departmentManagerRow').show();
+    $('#locationManagerRow').hide();
+  } else {
+    $('#departmentManagerRow').hide();
+    $('#locationManagerRow').show();
+  }
 });

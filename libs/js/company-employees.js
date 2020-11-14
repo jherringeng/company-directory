@@ -217,14 +217,23 @@ function employeeSaveUpdate(employeeId) {
   });
 }
 
+$(document).on('change', '#department', function () {
+
+  updateLocationToDepartment();
+
+});
+
+function updateLocationToDepartment() {
+  var departmentSelected = $('#department').val();
+  $('#baseLocation').html( departmentLocation[departmentSelected] );
+  console.log(departmentLocationId)
+  $('#location').val( departmentLocationId[departmentSelected] ).change();
+}
+
 // Event listener for employee class - gets employee from database
 $(document).on('click', '.newEmployee', function () {
   openNewEmployeeModal();
 });
-
-function showValues(){
-  console.log("Showing values");
-}
 
 function openNewEmployeeModal() {
   $("#informationModalLabel").html('Employee Information');
@@ -262,25 +271,9 @@ function openNewEmployeeModal() {
 
 }
 
-$(document).on('change', '#department', function () {
-
-  updateLocationToDepartment();
-
-});
-
-function updateLocationToDepartment() {
-  var departmentSelected = $('#department').val();
-  $('#baseLocation').html( departmentLocation[departmentSelected] );
-  console.log(departmentLocationId)
-  $('#location').val( departmentLocationId[departmentSelected] ).change();
-}
-
-
 // Event listener for new employee modal - adds employee to database
 $(document).on('submit', '#newEmployeeModal', function () {
-
   saveNewEmployee();
-
 });
 
 function saveNewEmployee() {
