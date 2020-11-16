@@ -105,3 +105,97 @@ $(document).on('change', '#managerTier', function () {
     $('#locationManagerRow').show();
   }
 });
+
+// Event listener for employee class - gets employee from database
+$(document).on('click', '.newDepartment', function () {
+  newdepartmentModal(locations);
+});
+
+function newdepartmentModal(locations) {
+  $("#informationModalLabel").html('New Department');
+  $("#informationModalBody").html("");
+
+  // Constructs HTML for modal form
+  $('.modalForm').attr("id","newDepartmentModal");
+  $('.modalForm').attr("data-id", "" );
+
+  $("#informationModalBody").append('<table id="inputTable" class="table">');
+
+    $("#inputTable").append('<tr><td><label for="departmentNameInput">Department Name</label></td><td><input type="text" id="departmentNameInput" name="departmentNameInput" value="" pattern="[0-9A-Za-z ]+" required></td></tr>');
+    $("#inputTable").append('<tr><td><label for="locationInput">Available locations: </td><td><select id="locationInput" name="locationInput" value=""></td></tr>');
+      locations.forEach(function(location) {
+        if (location['id'] > 0) {
+          $("#locationInput").append('<option value="' + location['id']  + '" name="' + location['name'] + '" required>' + location['name'] + '</option>');
+        }
+
+      });
+  // Add buttons to modal footer
+  $('.modal-footer').html("");
+  $(".modal-footer").append('<input type="submit" class="btn btn-primary float-right">');
+  $(".modal-footer").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
+  $('.modal-footer').show();
+
+  $('#informationModal').modal('show');
+
+}
+
+// Event listener for new employee modal - adds employee to database
+$(document).on('submit', '#newDepartmentModal', function () {
+  saveNewDepartment(showDepartmentModal, getAllTables, displayDepartmentPageData);
+});
+
+function saveNewDepartment(displayInfoModal, updateCallback, displayCallback) {
+  console.log("Saving department")
+
+  $.ajax({
+    url: "libs/php/newDepartment.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      departmentName: $('#departmentNameInput').val(),
+      locationID: $('#locationInput').val(),
+    },
+    success: function(result) {
+
+      console.log(result)
+
+      if (result.status.name == "ok") {
+
+        console.log("Saved Department")
+        var department = result['data'][0];
+        displayInfoModal(department);
+
+        updateCallback(displayCallback);
+        $('#newDepartmentModal').modal('hide');
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+      console.warn(jqXHR.responseText)
+    }
+  });
+}
+
+function showDepartmentModal(department) {
+  $("#informationModalLabel").html('New Department');
+  $("#informationModalBody").html("");
+
+  // Constructs HTML for modal form
+  $('.modalForm').attr("id","newDepartmentModal");
+  $('.modalForm').attr("data-id", "" );
+
+  $("#informationModalBody").append('<table id="inputTable" class="table">');
+
+    $("#inputTable").append('<tr><td><label for="departmentNameInput">Department Name</label></td><td>' + department['name'] + '</td></tr>');
+    $("#inputTable").append('<tr><td><label for="locationInput">Location</td><td>' + department['locationName'] + '</td></tr>');
+
+  // Add buttons to modal footer
+  $('.modal-footer').html("");
+  $(".modal-footer").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
+  $('.modal-footer').show();
+
+  $('#informationModal').modal('show');
+
+}

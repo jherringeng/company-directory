@@ -105,7 +105,7 @@ function getAllEmployees(callback) {
 function displayAllEmployees(employees) {
   $("#company-employees").html("")
   $("#company-employees").append('<div id="employeesHeader" class ="employee">');
-  $("#employeesHeader").append('<div class="employee-info"><b>Name</b></div>');
+  $("#employeesHeader").append('<div class="employee-info employeeName"><b>Name</b></div>');
   $("#employeesHeader").append('<div class="employee-info"><b>Job Title</b></div>');
   $("#employeesHeader").append('<div class="employee-info"><b>Manager</b></div>');
   $("#employeesHeader").append('<div class="employee-info"><b>Department</b></div>');

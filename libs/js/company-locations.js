@@ -148,10 +148,10 @@ function newLocationModal() {
 
 // Event listener for new employee modal - adds employee to database
 $(document).on('submit', '#newLocationModal', function () {
-  saveNewLocation();
+  saveNewLocation(showLocationModal, getAllTables, displayLocationPageData);
 });
 
-function saveNewLocation(getAllTables, displayLocationPageData) {
+function saveNewLocation(displayInfoModal, updateCallback, displayCallback) {
   console.log("Saving location")
 
   $.ajax({
@@ -168,8 +168,8 @@ function saveNewLocation(getAllTables, displayLocationPageData) {
       if (result.status.name == "ok") {
 
         console.log("Saved Location")
-        // var employee = result['data'][0];
-        // displayEmployeeInfoModal(employee);
+        var location = result['data'][0];
+        displayInfoModal(location);
 
         updateCallback(displayCallback);
 
@@ -183,7 +183,30 @@ function saveNewLocation(getAllTables, displayLocationPageData) {
   });
 }
 
-// /* Following from bootstrap-menu detail-smart-hide*/
+function showLocationModal(location) {
+  $("#informationModalLabel").html('New Location');
+  $("#informationModalBody").html("");
+
+  // Constructs HTML for modal form
+  $('.modalForm').attr("id","");
+  $('.modalForm').attr("data-id", "" );
+
+  $("#informationModalBody").append('<table id="inputTable" class="table">');
+
+    $("#inputTable").append('<tr><td><label for="locationNameInput">Location Name</label></td><td>' + location['name'] + '</td></tr>');
+    $("#inputTable").append('<tr><td><label for="addressInput">Address</td><td>' + location['address'] + '</td></tr>');
+    $("#inputTable").append('<tr><td><label for="postcodeInput">Postcode</td><td>' + location['postcode'] + '</td></tr>');
+
+  // Add buttons to modal footer
+  $('.modal-footer').html("");
+  $(".modal-footer").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
+  $('.modal-footer').show();
+
+  $('#informationModal').modal('show');
+
+}
+
+/* Following from bootstrap-menu detail-smart-hide*/
 // add padding top to show content behind navbar
 $('.container').css('padding-top', $('.navbar').outerHeight() + 'px')
 
