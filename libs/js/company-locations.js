@@ -197,7 +197,7 @@ function showLocationModal(location) {
     if (location['managerFirstName'] == null || location['managerLastName'] == null) {
       managerName = "No manager";
     } else {
-      managerName = managerFirstName + ' ' + managerLastName;
+      managerName = location['managerFirstName'] + ' ' + location['managerLastName'];
     }
     $("#infoTable").append('<tr><td>Manager</td><td>' + managerName + '</td></tr>');
 
@@ -374,22 +374,58 @@ function showNewLocationModal(location) {
 $(document).on('click', '#deleteLocation', function () {
   var locationId = $(this).data('id');
   var locationName = $(this).data('name');
-  deleteLocationModal(locationId, editLocationModal);
+  deleteLocationModal(locationId, locationName);
 });
 
 function deleteLocationModal(locationId, locationName) {
-  $("#confirmationModalLabel").html('Delete Location');
+  $("#confirmationModalLabel").html('Delete ' + locationName + ' location?');
   $("#confirmationModalBody").html("");
-
-  $("#confirmationModalBody").html('Delete location ' + locationName + '?');
 
   // Add buttons to modal footer
   $('#confirmationModalFooter').html("");
-  $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal" data-id="' + locationId + '">Confirm</button>');
+  $("#confirmationModalFooter").append('<button id="confirmDeleteLocation" type="button" class="btn btn-danger float-right" data-dismiss="modal" data-id="' + locationId + '">Confirm</button>');
   $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Cancel</button>');
   $('#modal-footer').show();
 
   $('#confirmationModal').modal('show');
+}
+
+// Event listener for new employee modal - adds employee to database
+$(document).on('click', '#confirmDeleteLocation', function () {
+  var locationId = $(this).data('id');
+  deleteLocation(locationId, getAllTables, displayLocationPageData);
+});
+
+function deleteLocation(locationId, updateCallback, displayCallback) {
+  console.log("Deleting location")
+
+  $.ajax({
+    url: "libs/php/deleteLocationByID.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      locationId: locationId
+    },
+    success: function(result) {
+
+
+
+      if (result.status.name == "ok") {
+
+        console.log("Deleted Location")
+
+        updateCallback(displayCallback);
+        $('#informationModal').modal('hide');
+        $('#confirmationModal').modal('hide');
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+      console.warn(jqXHR.responseText)
+    }
+  });
 }
 
 /* Following from bootstrap-menu detail-smart-hide*/

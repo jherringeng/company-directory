@@ -13,11 +13,11 @@
 
 
 -- Dumping database structure for companydirectory
--- CREATE DATABASE IF NOT EXISTS `companydirectory` /*!40100 DEFAULT CHARACTER SET utf8 */;
--- USE `companydirectory`;
+CREATE DATABASE IF NOT EXISTS `companydirectory` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `companydirectory`;
 
-CREATE DATABASE IF NOT EXISTS `dbs1014755` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `dbs1014755`;
+-- CREATE DATABASE IF NOT EXISTS `dbs1014755` /*!40100 DEFAULT CHARACTER SET utf8 */;
+-- USE `dbs1014755`;
 
 
 -- Dumping structure for table companydirectory.department
