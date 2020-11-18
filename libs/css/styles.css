@@ -19,6 +19,16 @@ table {
   padding-bottom: 8px;
 }
 
+.icon {
+  height: 36px;
+  width: 36px;
+}
+
+.location-name {
+  background-color: yellow;
+  margin-bottom: 12px;
+}
+
 /* Following from bootstrap-menu */
 .smart-scroll{
   position: fixed;

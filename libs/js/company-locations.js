@@ -28,15 +28,15 @@ function displayLocationPageData(tablesInput) {
     }
     var locationIdTag = '#location-' + location['id'];
     $('#company-locations').append('<div id="location-' + location['id'] + '" class="border border-primary location"></div>');
-    $(locationIdTag).append('<div class="location-name"><h3>' + location['name'] + '</h3></div>');
+    $(locationIdTag).append('<div class="location-name" data-id="' + location['id'] + '"><h3>' + location['name'] + '<img src="./libs/icons/ellipses.svg" class="icon btn btn-warning ml-2"></h3></div>');
     var managerName;
     if (location['firstName'] == null || location['firstName'] == null) {
       managerName = "Open Position";
     } else {
       managerName = location['firstName'] + ' ' + location['lastName'];
     }
-    $(locationIdTag).append('<div class="location-name"><h5>Manager: <span class="branchManager btn btn-lg btn-outline-dark"  data-id="' + location['manager'] + '">' + managerName + '</span></h5></div>');
-    $(locationIdTag).append('<div class="location-name"><h5>' + location['address'] +', ' + location['name'] + ', ' + location['postcode'] + '</h5></div>');
+    $(locationIdTag).append('<div><h5>Manager: <span class="branchManager btn btn-lg btn-outline-dark"  data-id="' + location['manager'] + '">' + managerName + '</span></h5></div>');
+    $(locationIdTag).append('<div><h5>' + location['address'] +', ' + location['name'] + ', ' + location['postcode'] + '</h5></div>');
     departments.forEach(function(department){
 
       if (department['locationID'] === location['id']) {
@@ -147,8 +147,171 @@ function newLocationModal() {
 }
 
 // Event listener for new employee modal - adds employee to database
+$(document).on('click', '.location-name', function () {
+  var locationId = $(this).data('id');
+  getLocation(locationId, showLocationModal);
+  // editLocation(showLocationModal, getAllTables, displayLocationPageData);
+});
+
+function getLocation(locationId, displayInfoModal) {
+  $.ajax({
+    url: "libs/php/getLocation.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      locationId: locationId
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+
+        console.log("Showing Location")
+        var location = result['data'][0];
+        console.log(location)
+        displayInfoModal(location);
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+      console.warn(jqXHR.responseText)
+    }
+  });
+}
+
+function showLocationModal(location) {
+  $("#informationModalLabel").html('Location Information');
+  $("#informationModalBody").html("");
+
+  // Constructs HTML for modal form
+  $('.modalForm').attr("id","");
+  $('.modalForm').attr("data-id", "");
+
+  $("#informationModalBody").append('<table id="infoTable" class="table">');
+
+    $("#infoTable").append('<tr><td>Location Name</td><td>' + location['name'] + '</td></tr>');
+    $("#infoTable").append('<tr><td>Address</td><td>' + location['address'] + '</td></tr>');
+    $("#infoTable").append('<tr><td>Postcode</td><td>' + location['postcode'] + '</td></tr>');
+    var managerName;
+    if (location['managerFirstName'] == null || location['managerLastName'] == null) {
+      managerName = "No manager";
+    } else {
+      managerName = managerFirstName + ' ' + managerLastName;
+    }
+    $("#infoTable").append('<tr><td>Manager</td><td>' + managerName + '</td></tr>');
+
+  // Add buttons to modal footer
+  $('.modal-footer').html("");
+  $(".modal-footer").append('<button id="editLocation" type="button" class="btn btn-primary float-right" data-id="' + location['id'] + '">Edit</button>');
+  $(".modal-footer").append('<button id="deleteLocation" type="button" class="btn btn-danger float-right" data-id="' + location['id'] + '" data-name="' + location['name'] + '">Delete</button>');
+  $(".modal-footer").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
+  $('.modal-footer').show();
+
+  $('#informationModal').modal('show');
+
+}
+
+// Event listener for new employee modal - adds employee to database
+$(document).on('click', '#editLocation', function () {
+  var locationId = $(this).data('id');
+  editLocation(locationId, editLocationModal);
+});
+
+function editLocation(locationId, displayInfoModal) {
+  $.ajax({
+    url: "libs/php/getLocation.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      locationId: locationId
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+
+        console.log("Showing Location")
+        var location = result['data'][0];
+        console.log(location)
+        displayInfoModal(location);
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+      console.warn(jqXHR.responseText)
+    }
+  });
+}
+
+function editLocationModal(location) {
+  $("#informationModalLabel").html('Edit Location');
+  $("#informationModalBody").html("");
+
+  // Constructs HTML for modal form
+  $('.modalForm').attr("id","editLocationModal");
+  $('.modalForm').attr("data-id", location['id'] );
+
+  $("#informationModalBody").append('<table id="inputTable" class="table">');
+
+    $("#inputTable").append('<tr><td><label for="locationNameInput">Location Name</label></td><td><input type="text" id="locationNameInput" name="locationNameInput" value="' + location['name'] + '" pattern="[A-Za-z ]+" required></td></tr>');
+    $("#inputTable").append('<tr><td><label for="addressInput">Address</td><td><input type="text" id="addressInput" name="addressInput" value="' + location['address'] + '" pattern="[0-9A-Za-z ]+" required></td></tr>');
+    $("#inputTable").append('<tr><td><label for="postcodeInput">Postcode</td><td><input type="text" id="postcodeInput" name="postcodeInput" value="' + location['postcode'] + '" pattern="[0-9A-Za-z ]+" required></td></tr>');
+
+  // Add buttons to modal footer
+  $('.modal-footer').html("");
+  $(".modal-footer").append('<input type="submit" class="btn btn-primary float-right">');
+  $(".modal-footer").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
+  $('.modal-footer').show();
+
+  $('#informationModal').modal('show');
+
+}
+
+// Event listener for new employee modal - adds employee to database
+$(document).on('submit', '#editLocationModal', function () {
+  var locationId = $(this).data('id');
+  updateLocation(locationId, showNewLocationModal, getAllTables, displayLocationPageData);
+});
+
+function updateLocation(locationId, displayInfoModal, updateCallback, displayCallback) {
+  console.log("Editing location")
+
+  $.ajax({
+    url: "libs/php/editLocation.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      locationId: locationId,
+      locationName: $('#locationNameInput').val(),
+      address: $('#addressInput').val(),
+      postcode: $('#postcodeInput').val(),
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+
+        console.log("Saved Location")
+        var location = result['data'][0];
+        console.log(location)
+        displayInfoModal(location);
+
+        updateCallback(displayCallback);
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+      console.warn(jqXHR.responseText)
+    }
+  });
+}
+
+// Event listener for new employee modal - adds employee to database
 $(document).on('submit', '#newLocationModal', function () {
-  saveNewLocation(showLocationModal, getAllTables, displayLocationPageData);
+  saveNewLocation(showNewLocationModal, getAllTables, displayLocationPageData);
 });
 
 function saveNewLocation(displayInfoModal, updateCallback, displayCallback) {
@@ -183,8 +346,8 @@ function saveNewLocation(displayInfoModal, updateCallback, displayCallback) {
   });
 }
 
-function showLocationModal(location) {
-  $("#informationModalLabel").html('New Location');
+function showNewLocationModal(location) {
+  $("#informationModalLabel").html('Location');
   $("#informationModalBody").html("");
 
   // Constructs HTML for modal form
@@ -204,6 +367,29 @@ function showLocationModal(location) {
 
   $('#informationModal').modal('show');
 
+}
+
+
+// Event listener for new employee modal - adds employee to database
+$(document).on('click', '#deleteLocation', function () {
+  var locationId = $(this).data('id');
+  var locationName = $(this).data('name');
+  deleteLocationModal(locationId, editLocationModal);
+});
+
+function deleteLocationModal(locationId, locationName) {
+  $("#confirmationModalLabel").html('Delete Location');
+  $("#confirmationModalBody").html("");
+
+  $("#confirmationModalBody").html('Delete location ' + locationName + '?');
+
+  // Add buttons to modal footer
+  $('#confirmationModalFooter').html("");
+  $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal" data-id="' + locationId + '">Confirm</button>');
+  $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Cancel</button>');
+  $('#modal-footer').show();
+
+  $('#confirmationModal').modal('show');
 }
 
 /* Following from bootstrap-menu detail-smart-hide*/
