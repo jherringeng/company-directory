@@ -1,8 +1,7 @@
 <?php
 
-
 	// example use from browser
-	// http://localhost/companydirectory/libs/php/getDepartmentByID.php?id=2
+	// http://localhost/companydirectory/libs/php/getAll.php
 
 	// remove next two lines for production
 
@@ -12,6 +11,8 @@
 	$executionStartTime = microtime(true);
 
 	include("config.php");
+
+	header('Content-Type: application/json; charset=UTF-8');
 
 	$conn = new mysqli($cd_host, $cd_user, $cd_password, $cd_dbname, $cd_port, $cd_socket);
 
@@ -31,13 +32,13 @@
 
 	}
 
-	// $_REQUEST used for development / debugging. Remember to cange to $_POST for production
+	$id = $_REQUEST['id']; $departmentName = $_REQUEST['departmentName']; $locationID = $_REQUEST['locationID'];
 
-	// $query = 'SELECT id, name, locationID FROM department WHERE id = ' . $_REQUEST['id'];
-	// $query = 'SELECT d.id, d.name, d.locationID, p.firstName as managerFirstName, p.lastName as managerLastName, l.name as departmentLocation FROM department d LEFT JOIN location l ON (l.id = d.locationID) LEFT JOIN personnel p ON (p.id = d.departmentManager) WHERE id = ' . $_REQUEST['id'];
-	$query = 'SELECT d.id, d.name, d.locationID, l.name as locationName, p.firstName as managerFirstName, p.lastName as managerLastName FROM department d LEFT JOIN location l ON (l.id = d.locationID) LEFT JOIN personnel p ON (p.id = d.departmentManager) WHERE d.id = ' . $_REQUEST['id'];
-	// $query = "SELECT l.id, l.name, l.address, l.postcode, l.manager, p.firstName as managerFirstName, p.lastName as managerLastName FROM location l LEFT JOIN personnel p ON (p.id = l.manager) WHERE l.id = '$locationId'";
+	$query = "UPDATE department SET name='$departmentName', locationID='$locationID' WHERE id='$id'";
 
+	$conn->query($query);
+
+	$query = "SELECT d.name, d.id, d.locationID, l.name as locationName FROM department d LEFT JOIN location l ON (l.id = d.locationId) WHERE d.id = '$id'";
 
 	$result = $conn->query($query);
 
@@ -69,8 +70,6 @@
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
 	$output['data'] = $data;
-
-	header('Content-Type: application/json; charset=UTF-8');
 
 	mysqli_close($conn);
 
