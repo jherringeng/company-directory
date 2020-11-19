@@ -110,7 +110,6 @@ $(document).on('change', '#managerTier', function () {
 $(document).on('click', '.department-name', function () {
   var departmentId = $(this).data('id');
   getDepartment(departmentId, showDepartmentModal);
-  // editLocation(showLocationModal, getAllTables, displayLocationPageData);
 });
 
 function getDepartment(departmentId, displayInfoModal) {
@@ -168,6 +167,7 @@ function showDepartmentModal(department) {
   // Add buttons to modal footer
   $('.modal-footer').html("");
   $(".modal-footer").append('<button type="button" id="editDepartment" class="btn btn-primary float-right" data-id="' + department['id'] + '" data-name="' + department['name'] + '" data-locationid="' + department['locationID'] + '">Edit</button>');
+  $(".modal-footer").append('<button type="button" id="deleteDepartment" class="btn btn-danger float-right" data-id="' + department['id'] + '" data-name="' + department['name'] + '">Delete</button>');
   $(".modal-footer").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
   $('.modal-footer').show();
 
@@ -283,6 +283,65 @@ function newDepartmentModal(locations) {
 
   $('#informationModal').modal('show');
 
+}
+
+// Event listener for new employee modal - adds employee to database
+$(document).on('click', '#deleteDepartment', function () {
+  var departmentId = $(this).data('id');
+  var departmentName = $(this).data('name');
+  deleteDepartmentModal(departmentId, departmentName);
+});
+
+function deleteDepartmentModal(departmentId, departmentName) {
+  console.log("Confirm delete department")
+  $("#confirmationModalLabel").html('Delete ' + departmentName + ' department?');
+  $("#confirmationModalBody").html("");
+
+  // Add buttons to modal footer
+  $('#confirmationModalFooter').html("");
+  $("#confirmationModalFooter").append('<button id="confirmDeleteDepartment" type="button" class="btn btn-danger float-right" data-dismiss="modal" data-id="' + departmentId + '">Confirm</button>');
+  $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Cancel</button>');
+  $('#modal-footer').show();
+
+  $('#confirmationModal').modal('show');
+}
+
+// Event listener for new employee modal - adds employee to database
+$(document).on('click', '#confirmDeleteDepartment', function () {
+  var departmentId = $(this).data('id');
+  deleteDepartment(departmentId, getAllTables, displayDepartmentPageData);
+});
+
+function deleteDepartment(departmentId, updateCallback, displayCallback) {
+  console.log("Deleting department")
+
+  $.ajax({
+    url: "libs/php/deleteDepartmentByID.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      id: departmentId
+    },
+    success: function(result) {
+
+
+
+      if (result.status.name == "ok") {
+
+        console.log("Deleted Department")
+
+        updateCallback(displayCallback);
+        $('#informationModal').modal('hide');
+        $('#confirmationModal').modal('hide');
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+      console.warn(jqXHR.responseText)
+    }
+  });
 }
 
 // Event listener for new employee modal - adds employee to database
