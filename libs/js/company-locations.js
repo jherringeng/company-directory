@@ -1,4 +1,4 @@
-import { getAllTables, getEmployee, updateEmployee, employeeSaveUpdate, promoteEmployeeModal, promoteEmployee} from './ajax-calls.js';
+import { getAllTables, getEmployee, updateEmployee, employeeSaveUpdate, promoteEmployeeModal, promoteEmployee, deleteEmployee} from './ajax-calls.js';
 import { displayEmployeeInfoModal, deleteEmployeeModal } from './display-functions.js';
 
 var employees, departments, locations, statuses;
@@ -110,6 +110,12 @@ $(document).on('click', '#employeeDeleteButton', function () {
   var employeeId = $(this).data("id");
   var employeeName = $(this).data("name");
   deleteEmployeeModal(employeeId, employeeName);
+});
+
+// See display-functions for function
+$(document).on('click', '#confirmDeleteEmployee', function () {
+  var employeeId = $(this).data("id");
+  deleteEmployee(employeeId, getAllTables, displayLocationPageData);
 });
 
 $(document).on('change', '#managerTier', function () {
