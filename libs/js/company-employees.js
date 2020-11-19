@@ -1,5 +1,5 @@
-import { getAllDepartments, getAllLocations, getEmployee, updateEmployee, promoteEmployeeModal, promoteEmployee } from './ajax-calls.js';
-import { displayEmployeeInfoModal } from './display-functions.js';
+import { getAllDepartments, getAllLocations, getEmployee, updateEmployee, promoteEmployeeModal, promoteEmployee, deleteEmployee } from './ajax-calls.js';
+import { displayEmployeeInfoModal, deleteEmployeeModal } from './display-functions.js';
 
 var employees, departments, locations, statuses;
 var departmentManager = {}, departmentManagerId = {}, locationManager = {};
@@ -152,6 +152,19 @@ $(document).on('click', '#employeeUpdateButton', function () {
 $(document).on('submit', '#promoteEmployeeModalForm', function () {
   var employeeId = $(this).data("id");
   promoteEmployee(employeeId, displayEmployeeInfoModal, getAllEmployees, displayAllEmployees);
+});
+
+// See display-functions for function
+$(document).on('click', '#employeeDeleteButton', function () {
+  var employeeId = $(this).data("id");
+  var employeeName = $(this).data("name");
+  deleteEmployeeModal(employeeId, employeeName);
+});
+
+// See display-functions for function
+$(document).on('click', '#confirmDeleteEmployee', function () {
+  var employeeId = $(this).data("id");
+  deleteEmployee(employeeId, getAllEmployees, displayAllEmployees);
 });
 
 // Event listener for employee class - gets employee from database

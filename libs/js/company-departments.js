@@ -1,5 +1,5 @@
 import { getAllTables, getEmployee, updateEmployee, employeeSaveUpdate, promoteEmployeeModal, promoteEmployee} from './ajax-calls.js';
-import { displayEmployeeInfoModal } from './display-functions.js';
+import { displayEmployeeInfoModal, deleteEmployeeModal } from './display-functions.js';
 
 var employees, departments, locations, statuses;
 
@@ -94,6 +94,13 @@ $(document).on('submit', '#promoteEmployeeModalForm', function () {
 $(document).on('click', '#promoteEmployeeModal', function () {
   var employeeId = $(this).data("id");
   promoteEmployeeModal(employeeId, departments, locations);
+});
+
+// See display-functions for function
+$(document).on('click', '#employeeDeleteButton', function () {
+  var employeeId = $(this).data("id");
+  var employeeName = $(this).data("name");
+  deleteEmployeeModal(employeeId, employeeName);
 });
 
 $(document).on('change', '#managerTier', function () {

@@ -264,18 +264,6 @@ export function promoteEmployee(employeeId, modalCallback, updateCallback, displ
   var department = parseInt($('#departmentManager').val());
   var location = parseInt($('#locationManager').val());
 
-  // var data = {
-  //   id: employeeId,
-  //   promoteTo: $('#managerTier').val(),
-  //   department: department,
-  //   location: location,
-  //   departmentName: departmentName,
-  //   locationName: locationName,
-  //   jobTier: jobTier
-  // }
-
-  // console.log(data)
-
   $.ajax({
     url: "libs/php/promoteEmployee.php",
     type: 'POST',
@@ -307,6 +295,36 @@ export function promoteEmployee(employeeId, modalCallback, updateCallback, displ
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log("Request failed: " + textStatus + ' ' + errorThrown);
+      console.warn(jqXHR.responseText)
+    }
+  });
+}
+
+export function deleteEmployee(employeeId, updateCallback, displayCallback) {
+  console.log("Deleting employee")
+
+  $.ajax({
+    url: "libs/php/deleteEmployeeByID.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      id: employeeId
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+
+        console.log("Deleted Employee")
+
+        updateCallback(displayCallback);
+        $('#informationModal').modal('hide');
+        $('#confirmationModal').modal('hide');
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });
