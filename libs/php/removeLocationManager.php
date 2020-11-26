@@ -31,8 +31,11 @@
 
 	}
 
-		$query = 'SELECT d.id, d.name, d.locationID, d.departmentManager, l.name as locationName, p.firstName as managerFirstName, p.lastName as managerLastName FROM department d LEFT JOIN location l ON (l.id = d.locationID) LEFT JOIN personnel p ON (p.id = d.departmentManager) WHERE d.id = ' . $_REQUEST['id'];
+	$query = 'UPDATE location SET manager = NULL WHERE id= ' . $_REQUEST['id'];
 
+	$result = $conn->query($query);
+
+	$query = 'UPDATE personnel SET jobTitle = NULL WHERE id= ' . $_REQUEST['managerId'];
 
 	$result = $conn->query($query);
 
@@ -51,19 +54,11 @@
 
 	}
 
-   	$data = [];
-
-	while ($row = mysqli_fetch_assoc($result)) {
-
-		array_push($data, $row);
-
-	}
-
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
-	$output['data'] = $data;
+	$output['data'] = [];
 
 	header('Content-Type: application/json; charset=UTF-8');
 

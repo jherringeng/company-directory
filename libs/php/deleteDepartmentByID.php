@@ -40,7 +40,7 @@
 
 	$row = mysqli_fetch_assoc($result);
 
-	$query = "UPDATE personnel SET jobTitle = NULL WHERE id = ". $row['departmentManager'];
+	$query = "UPDATE personnel SET jobTitle = '' WHERE id = ". $row['departmentManager'];
 
 	$result = $conn->query($query);
 

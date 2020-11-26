@@ -11,11 +11,9 @@
   // $cd_dbname = 'dbs1014755';
   // $cd_user = 'dbu378946';
   // $cd_password = '2001!Company';
-	// $cd_host = "db5001187110.hosting-data.io";
 	// $cd_port = 3306;
 	// $cd_socket = "";
 	// $cd_user = "dbu378946"; // user name
 	// $cd_password = "2001!Company"; // password
-	// $cd_dbname = "companydirectory"; // database name
 
 ?>

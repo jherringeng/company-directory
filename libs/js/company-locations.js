@@ -28,15 +28,17 @@ function displayLocationPageData(tablesInput) {
     }
     var locationIdTag = '#location-' + location['id'];
     $('#company-locations').append('<div id="location-' + location['id'] + '" class="border border-primary location"></div>');
-    $(locationIdTag).append('<div class="location-name" data-id="' + location['id'] + '"><h3>' + location['name'] + '<img src="./libs/icons/ellipses.svg" class="icon btn btn-warning ml-2"></h3></div>');
+    var locationDetailsIdTag = '#locationDetails-' + location['id'];
+    $(locationIdTag).append('<div id="locationDetails-' + location['id']  + '" class="location-details"></div>');
+    $(locationDetailsIdTag).append('<div class="location-name" data-id="' + location['id'] + '"><h3 class="mr-2">' + location['name'] + '<img src="./libs/icons/info-24.svg" class="btn btn-warning"></h3></div>');
     var managerName;
     if (location['firstName'] == null || location['firstName'] == null) {
       managerName = "Open Position";
     } else {
       managerName = location['firstName'] + ' ' + location['lastName'];
     }
-    $(locationIdTag).append('<div><h5>Manager: <span class="branchManager btn btn-lg btn-outline-dark"  data-id="' + location['manager'] + '">' + managerName + '</span></h5></div>');
-    $(locationIdTag).append('<div><h5>' + location['address'] +', ' + location['name'] + ', ' + location['postcode'] + '</h5></div>');
+    $(locationDetailsIdTag).append('<h5>Manager: <span class="branchManager btn btn-lg btn-outline-dark"  data-id="' + location['manager'] + '">' + managerName + '</span></h5>');
+    $(locationDetailsIdTag).append('<div><h5>' + location['address'] +', ' + location['name'] + ', ' + location['postcode'] + '</h5></div>');
     departments.forEach(function(department){
 
       if (department['locationID'] === location['id']) {
@@ -51,9 +53,9 @@ function displayLocationPageData(tablesInput) {
         } else {
           managerName = department['managerFirstName'] + ' ' + department['managerLastName'];
         }
-        $('#' + departmentIdTag).append('Manager: <span class="employee-name btn btn-outline-dark"  data-id="' + department['departmentManager'] + '">' + managerName + '</span>');
+        $('#' + departmentIdTag).append('<div class="location-department-manager">Manager: <span class="employee-name btn btn-outline-dark"  data-id="' + department['departmentManager'] + '">' + managerName + '</span></div>');
         $('#' + departmentIdTag).append('<button data-toggle="collapse" data-target="#' + departmentEmployeesIdTag + '" class="btn btn-info location-show-employees">Show Employees</button>');
-        $('#' + departmentIdTag).append('<div id="' + departmentEmployeesIdTag + '" class="location-department collapse">');
+        $(locationIdTag).append('<div id="' + departmentEmployeesIdTag + '" class="location-department-employees collapse">');
         console.log(departmentEmployeesIdTag)
         employees.forEach(function(employee) {
 
@@ -209,10 +211,11 @@ function showLocationModal(location) {
     var managerName;
     if (location['managerFirstName'] == null || location['managerLastName'] == null) {
       managerName = "No manager";
+      $("#infoTable").append('<tr><td>Manager</td><td>' + managerName + '</td></tr>');
     } else {
       managerName = location['managerFirstName'] + ' ' + location['managerLastName'];
+      $("#infoTable").append('<tr><td>Manager</td><td>' + managerName + '<button type="button" id="removeLocationManager" class="btn btn-warning float-right" data-id="' + location['id'] + '" data-name="' + location['name'] + '" data-manager="' + managerName + '" data-managerid="' + location['manager'] + '"><img src="./libs/icons/dash-24.svg"></button></td></tr></td></tr>');
     }
-    $("#infoTable").append('<tr><td>Manager</td><td>' + managerName + '</td></tr>');
 
   // Add buttons to modal footer
   $('.modal-footer').html("");
@@ -421,8 +424,6 @@ function deleteLocation(locationId, updateCallback, displayCallback) {
     },
     success: function(result) {
 
-
-
       if (result.status.name == "ok") {
 
         console.log("Deleted Location")
@@ -440,6 +441,69 @@ function deleteLocation(locationId, updateCallback, displayCallback) {
     }
   });
 }
+
+// Event listener for new employee modal - adds employee to database
+$(document).on('click', '#removeLocationManager', function () {
+  var locationId = $(this).data('id');
+  var locationName = $(this).data('name');
+  var managerName = $(this).data('manager');
+  var managerId = $(this).data('managerid');
+  removeLocationManagerModal(locationId, locationName, managerName, managerId);
+});
+
+function removeLocationManagerModal(locationId, locationName, managerName, managerId) {
+  console.log("Confirm remove location manager")
+  $("#confirmationModalLabel").html('Remove ' + managerName + ' as '+ locationName + ' manager?');
+  $("#confirmationModalBody").html("");
+
+  // Add buttons to modal footer
+  $('#confirmationModalFooter').html("");
+  $("#confirmationModalFooter").append('<button id="confirmRemoveLocationManager" type="button" class="btn btn-danger float-right" data-dismiss="modal" data-id="' + locationId + '" data-managerid="' + managerId + '">Confirm</button>');
+  $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Cancel</button>');
+  $('#modal-footer').show();
+
+  $('#confirmationModal').modal('show');
+}
+
+// Event listener for new employee modal - adds employee to database
+$(document).on('click', '#confirmRemoveLocationManager', function () {
+  var locationId = $(this).data('id');
+  var managerId = $(this).data('managerid');
+  console.log(managerId)
+  removeLocationManager(locationId, managerId, getAllTables, displayLocationPageData);
+});
+
+function removeLocationManager(locationId, managerId, updateCallback, displayCallback) {
+  console.log("Removing location manager")
+
+  $.ajax({
+    url: "libs/php/removeLocationManager.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      id: locationId,
+      managerId: managerId
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+
+        console.log("Removed Location manager")
+
+        updateCallback(displayCallback);
+        $('#informationModal').modal('hide');
+        $('#confirmationModal').modal('hide');
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+      console.warn(jqXHR.responseText)
+    }
+  });
+}
+
 
 /* Following from bootstrap-menu detail-smart-hide*/
 // add padding top to show content behind navbar

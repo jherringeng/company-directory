@@ -28,7 +28,10 @@ function displayDepartmentPageData(tablesInput) {
   departments.forEach(function(department) {
     var departmentIdTag = 'department-' + department['id'];
     $('#company-departments').append('<div id="department-' + department['id'] + '" class="border border-primary department"></div>');
-    $('#' + departmentIdTag).append('<div class="department-name" data-id="' + department['id'] + '"><h3>' + department['name'] + '<img src="./libs/icons/ellipses.svg" class="icon btn btn-warning ml-2"></h3></div>');
+    $('#' + departmentIdTag).append('<div class="department-name" data-id="' + department['id'] + '"><h3 class="mr-2">' + department['name'] + '<img src="./libs/icons/info-24.svg" class="btn btn-warning"></h3></div>');
+
+    var departmentDetailsIdTag = 'departmentDetails-' + department['id'];
+    $('#' + departmentIdTag).append('<div id="' + departmentDetailsIdTag + '" class="department-details"></div>');
 
     var managerName;
     if (department['managerFirstName'] == null || department['managerLastName'] == null) {
@@ -36,14 +39,13 @@ function displayDepartmentPageData(tablesInput) {
     } else {
       managerName = department['managerFirstName'] + ' ' + department['managerLastName'];
     }
-    $('#' + departmentIdTag).append('<h5>Manager: <span class="employee-name btn btn-outline-dark"  data-id="' + department['departmentManager'] + '">' + managerName + '</span></h5>');
+    $('#' + departmentDetailsIdTag).append('<h5 id="manager' + department['id']  + '" class="department-manager">Manager: <span class="employee-name btn btn-outline-dark"  data-id="' + department['departmentManager'] + '">' + managerName + '</span></h5>');
 
-    $('#' + departmentIdTag).append('<div id="' + departmentIdTag + 'LastLine" class="department-lastline">');
-    $('#' + departmentIdTag + 'LastLine').append('<h5>' + department['location'] + '</h5></div>');
+    $('#' + departmentDetailsIdTag).append('<h5 class="department-location">' + department['location'] + '</h5>');
 
     // Button to toggle dropdown
     var departmentEmployeesIdTag = 'department-employees' + department['id'];
-    $('#' + departmentIdTag + 'LastLine').append('<button data-toggle="collapse" data-target="#' + departmentEmployeesIdTag + '" class="btn btn-info department-show-employees">Show Employees</button>');
+    $('#' + departmentDetailsIdTag).append('<button data-toggle="collapse" data-target="#' + departmentEmployeesIdTag + '" class="btn btn-info">Show Employees</button>');
 
     // Creates dropdown for containing employees
     $('#' + departmentIdTag).append('<div id="' + departmentEmployeesIdTag + '" class="department-employees collapse">');
@@ -156,7 +158,7 @@ function getDepartment(departmentId, displayInfoModal) {
 }
 
 function showDepartmentModal(department) {
-  $("#informationModalLabel").html('New Department');
+  $("#informationModalLabel").html('Department');
   $("#informationModalBody").html("");
 
   // Constructs HTML for modal form
@@ -171,11 +173,11 @@ function showDepartmentModal(department) {
     var managerName;
     if (department['managerFirstName'] == null || department['managerLastName'] == null) {
       managerName = "No manager";
+      $("#infoTable").append('<tr><td>Manager</td><td>' + managerName + '</td></tr>');
     } else {
       managerName = department['managerFirstName'] + ' ' + department['managerLastName'];
+      $("#infoTable").append('<tr><td>Manager</td><td>' + managerName + '<button type="button" id="removeDepartmentManager" class="btn btn-warning float-right" data-id="' + department['id'] + '" data-name="' + department['name'] + '" data-manager="' + managerName + '" data-managerid="' + department['departmentManager'] + '"><img src="./libs/icons/dash-24.svg"></button></td></tr>');
     }
-    $("#infoTable").append('<tr><td>Manager</td><td>' + managerName + '</td></tr>');
-
 
   // Add buttons to modal footer
   $('.modal-footer').html("");
@@ -385,6 +387,68 @@ function saveNewDepartment(displayInfoModal, updateCallback, displayCallback) {
 
         updateCallback(displayCallback);
         $('#newDepartmentModal').modal('hide');
+
+      }
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log("Request failed");
+      console.warn(jqXHR.responseText)
+    }
+  });
+}
+
+// Event listener for new employee modal - adds employee to database
+$(document).on('click', '#removeDepartmentManager', function () {
+  var departmentId = $(this).data('id');
+  var departmentName = $(this).data('name');
+  var managerName = $(this).data('manager');
+  var managerId = $(this).data('managerid');
+  removeDepartmentManagerModal(departmentId, departmentName, managerName, managerId);
+});
+
+function removeDepartmentManagerModal(departmentId, departmentName, managerName, managerId) {
+  console.log("Confirm remove department manager")
+  $("#confirmationModalLabel").html('Remove ' + managerName + ' as '+ departmentName + ' manager?');
+  $("#confirmationModalBody").html("");
+
+  // Add buttons to modal footer
+  $('#confirmationModalFooter').html("");
+  $("#confirmationModalFooter").append('<button id="confirmRemoveDepartmentManager" type="button" class="btn btn-danger float-right" data-dismiss="modal" data-id="' + departmentId + '" data-managerid="' + managerId + '">Confirm</button>');
+  $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Cancel</button>');
+  $('#modal-footer').show();
+
+  $('#confirmationModal').modal('show');
+}
+
+// Event listener for new employee modal - adds employee to database
+$(document).on('click', '#confirmRemoveDepartmentManager', function () {
+  var departmentId = $(this).data('id');
+  var managerId = $(this).data('managerid');
+  console.log(managerId)
+  removeDepartmentManager(departmentId, managerId, getAllTables, displayDepartmentPageData);
+});
+
+function removeDepartmentManager(departmentId, managerId, updateCallback, displayCallback) {
+  console.log("Removing department manager")
+
+  $.ajax({
+    url: "libs/php/removeDepartmentManager.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      id: departmentId,
+      managerId: managerId
+    },
+    success: function(result) {
+
+      if (result.status.name == "ok") {
+
+        console.log("Removed Department manager")
+
+        updateCallback(displayCallback);
+        $('#informationModal').modal('hide');
+        $('#confirmationModal').modal('hide');
 
       }
 

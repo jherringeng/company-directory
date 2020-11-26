@@ -35,23 +35,46 @@
 
 	// $_REQUEST used for development / debugging. Remember to cange to $_POST for production
 
-	$query = 'SELECT manager FROM location WHERE id = ' . $_REQUEST['locationId'];
+	// $query = 'SELECT manager FROM location WHERE id = ' . $_REQUEST['locationId'];
+	//
+	// $result = $conn->query($query);
+	//
+	// $row = mysqli_fetch_assoc($result);
+	//
+	// $query = "UPDATE personnel SET jobTitle = NULL WHERE id = ". $row['manager'];
+	//
+	// $result = $conn->query($query);
 
-	$result = $conn->query($query);
+	$warning = false;
+	$data = [];
 
-	$row = mysqli_fetch_assoc($result);
+	while ($row = mysqli_fetch_assoc($result)) {
 
-	$query = "UPDATE personnel SET jobTitle = NULL WHERE id = ". $row['manager'];
+		$warning = true;
+		array_push($data, $row);
 
-	$result = $conn->query($query);
+	}
 
-	$query = 'DELETE FROM location WHERE id = ' . $_REQUEST['locationId'];
+	if ($warning == false) {
 
-	$result = $conn->query($query);
+		$query = 'DELETE FROM location WHERE id = ' . $_REQUEST['locationId'];
 
-	$query = "UPDATE department SET locationID = NULL WHERE locationID = ". $_REQUEST['locationId'];
+		$result = $conn->query($query);
+		$output['status']['name'] = "ok";
+		$output['data'] = [];
 
-	$result = $conn->query($query);
+	} else {
+		$output['status']['name'] = "warning";
+		$output['data'] = $data;
+	}
+
+	// $query = 'DELETE FROM location WHERE id = ' . $_REQUEST['locationId'];
+	//
+	// $result = $conn->query($query);
+
+	// $query = "UPDATE department SET locationID = NULL WHERE locationID = ". $_REQUEST['locationId'];
+	//
+	// $result = $conn->query($query);
 
 	if (!$result) {
 
@@ -69,10 +92,10 @@
 	}
 
 	$output['status']['code'] = "200";
-	$output['status']['name'] = "ok";
+	// $output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
-	$output['data'] = [];
+	// $output['data'] = [];
 
 	mysqli_close($conn);
 

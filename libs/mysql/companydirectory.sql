@@ -209,7 +209,7 @@ INSERT INTO `personnel` (`id`, `firstName`, `lastName`, `jobTitle`, `email`, `de
 	(112, 'Buzz', 'Lightyear', 'Head of Sales', 'blightyear@scorchio.com', 2, 2, 3),
 	(113, 'Buckford', 'Barnes', 'Head of Marketing', 'bbarnes@scorchio.com', 3, 2, 3),
   (114, 'Gary', 'Neville', 'Head of Legal', 'gneville@scorchio.com', 4, 1, 3),
-  (115, 'Buzz', 'Lightyear', 'Head of Services', 'blightyear@scorchio.com', 5, 1, 3),
+  (115, 'Veronica', 'Mars', 'Head of Services', 'vmars@scorchio.com', 5, 1, 3),
   (116, 'James', 'Morrison', 'Head of Research & Development', 'jmorrison@scorchio.com', 6, 3, 3),
   (117, 'Gwen', 'Stacey', 'Head of Product Management', 'gstacey@scorchio.com', 7, 3, 3),
   (118, 'Simone', 'Biles', 'Head of Training', 'sbiles@scorchio.com', 8, 4, 3),

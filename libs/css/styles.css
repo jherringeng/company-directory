@@ -3,7 +3,7 @@ td {
 }
 
 body {
-  background-image: linear-gradient(to right, red, yellow, red, yellow, red, yellow, red, yellow, red, yellow, red);
+  background-color: #007BFF;
 }
 
 div .nav-link:hover {
@@ -22,6 +22,10 @@ table {
 .icon {
   height: 36px;
   width: 36px;
+}
+
+.btn-outline-dark {
+  box-shadow: 1px 1px 1px 1px #ff6200 !important;
 }
 
 .location-name {
@@ -78,20 +82,29 @@ table {
   margin: 10px 0px;
 }
 
+.location-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .location-name {
-  width: 100%;
+  /* width: 100%; */
 }
 
 .location-department {
   padding: 4px 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.location-department-manager {
+  width: 30%;
 }
 
 .location-department-name {
-  display: block;
-}
-
-.location-department-name h4{
-  display: block;
+  width: 30%;
 }
 
 .department {
@@ -151,9 +164,18 @@ table {
   float: right;
 }
 
-.department-show-employees {
-  display: inline-block;
-  float: right;
+.department-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.department-manager {
+  width: 40%;
+}
+
+.department-location {
+  width: 30%;
 }
 
 .nav-toolbar-small {
@@ -161,6 +183,23 @@ table {
 }
 
 @media only screen and (max-width: 600px) {
+
+  .location-details {
+    display: block;
+  }
+
+  .location-department {
+    display: block;
+  }
+
+  .location-department-name {
+    width: auto;
+  }
+
+  .location-department-manager {
+    display: inline;
+  }
+
   .employee-info{
     width: 50%;
     padding: 3px;

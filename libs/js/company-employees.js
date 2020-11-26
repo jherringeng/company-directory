@@ -104,13 +104,6 @@ function getAllEmployees(callback) {
 
 function displayAllEmployees(employees) {
   $("#company-employees").html("")
-  $("#company-employees").append('<div id="employeesHeader" class ="employee">');
-  $("#employeesHeader").append('<div class="employee-info employeeName"><b>Name</b></div>');
-  $("#employeesHeader").append('<div class="employee-info"><b>Job Title</b></div>');
-  $("#employeesHeader").append('<div class="employee-info"><b>Manager</b></div>');
-  $("#employeesHeader").append('<div class="employee-info"><b>Department</b></div>');
-  $("#employeesHeader").append('<div class="employee-info"><b>Location</b></div>');
-
 
   employees.forEach(function(employee) {
 
@@ -127,8 +120,16 @@ function displayAllEmployees(employees) {
       managerName = locationManager[employee['locationID']];
     }
     $("#employee" + employee['id']).append('<div class="employeeManager employee-info">' + departmentManager[employee['departmentID']] + '</div>');
-    $("#employee" + employee['id']).append('<div class="employeeDepartment employee-info">' + employee['department'] + '</div>');
-    $("#employee" + employee['id']).append('<div class="employeeLocation employee-info">' + employee['location'] + '</div>');
+    if (employee['department']) {
+      $("#employee" + employee['id']).append('<div class="employeeDepartment employee-info">' + employee['department'] + '</div>');
+    } else {
+      $("#employee" + employee['id']).append('<div class="employeeDepartment employee-info">No department</div>');
+    }
+    if (employee['location']) {
+      $("#employee" + employee['id']).append('<div class="employeeLocation employee-info">' + employee['location'] + '</div>');
+    } else {
+      $("#employee" + employee['id']).append('<div class="employeeLocation employee-info">Unknown</div>');
+    }
 
     if(employee['status'] != 1) {
       $("#employee" + employee['id']).addClass( "absent-employee" );
