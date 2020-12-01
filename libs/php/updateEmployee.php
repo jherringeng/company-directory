@@ -32,7 +32,9 @@
 
 	}
 
-	$id = $_REQUEST['id']; $lastName = $_REQUEST['lastName']; $firstName = $_REQUEST['firstName']; $jobTitle = $_REQUEST['jobTitle']; $email = $_REQUEST['email']; $departmentID = $_REQUEST['department']; $jobTier = 4; $locationId = $_REQUEST['locationId']; $status = $_REQUEST['status'];
+	$id = $_REQUEST['id']; $lastName = $_REQUEST['lastName']; $firstName = $_REQUEST['firstName'];
+	$jobTitle = $_REQUEST['jobTitle']; $email = $_REQUEST['email']; $departmentID = $_REQUEST['department']; 
+	$jobTier = 4; $locationId = $_REQUEST['locationId']; $status = $_REQUEST['status'];
 
 	$query = "UPDATE personnel SET lastName='$lastName', firstName='$firstName', jobTitle='$jobTitle', email='$email', departmentID='$departmentID', jobTier = '$jobTier', currentLocationId = '$locationId', status = '$status' WHERE id='$id'";
 	$result = $conn->query($query);

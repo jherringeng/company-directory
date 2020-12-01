@@ -57,7 +57,7 @@ function displayEmployeePageData(tablesInput) {
       departmentManagerId[department['id']] = department['departmentManager'];
     }
   });
-  console.log(departments)
+  console.log(departmentLocation)
   locations = tablesInput['locations'];
   locations.forEach(function(location) {
     if (location['managerFirstName'] == null || location['managerLastName'] == null) {
@@ -133,6 +133,10 @@ function displayAllEmployees(employees) {
 
     if(employee['status'] != 1) {
       $("#employee" + employee['id']).addClass( "absent-employee" );
+    } else if (employee['location'] != departmentLocation[employee['departmentID']]) {
+      console.log(departmentLocation[employee['departmentID']])
+      console.log(employee['location'])
+      $("#employee" + employee['id']).addClass( "offsite-employee" );
     }
 
   })
@@ -151,7 +155,7 @@ $(document).on('click', '#employeeUpdateButton', function () {
 });
 
 $(document).on('submit', '#promoteEmployeeModalForm', function () {
-  var employeeId = $(this).data("id");
+  var employeeId = $('#promoteEmployeeModalForm').data("id");
   promoteEmployee(employeeId, displayEmployeeInfoModal, getAllEmployees, displayAllEmployees);
 });
 
@@ -185,7 +189,9 @@ $(document).on('change', '#managerTier', function () {
 });
 
 $(document).on('submit', '#updateEmployeeModalForm', function () {
-  employeeSaveUpdate($(this).data("id"));
+  var employeeId = $('#updateEmployeeModalForm').data("id");
+  employeeSaveUpdate(employeeId);
+  console.log(employeeId)
 });
 
 function employeeSaveUpdate(employeeId) {
@@ -213,12 +219,6 @@ function employeeSaveUpdate(employeeId) {
         console.log();
         var employee = result['data'][0];
         displayEmployeeInfoModal(employee);
-
-        $('#employee' + employee['id'] + ' .employeeName').html('<b>' + employee['firstName'] + ' ' + employee['lastName'] + '</b>')
-        $('#employee' + employee['id'] + ' .employeeTitle').html(employee['jobTitle']);
-        $('#employee' + employee['id'] + ' .employeeEmail').html(employee['email']);
-        $('#employee' + employee['id'] + ' .employeeDepartment').html(employee['department']);
-        $('#employee' + employee['id'] + ' .employeeLocation').html(employee['location']);
 
         getAllEmployees(displayAllEmployees);
 

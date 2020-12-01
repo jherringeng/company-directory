@@ -28,7 +28,7 @@ function displayDepartmentPageData(tablesInput) {
   departments.forEach(function(department) {
     var departmentIdTag = 'department-' + department['id'];
     $('#company-departments').append('<div id="department-' + department['id'] + '" class="border border-primary department"></div>');
-    $('#' + departmentIdTag).append('<div class="department-name" data-id="' + department['id'] + '"><h3 class="mr-2">' + department['name'] + '<img src="./libs/icons/info-24.svg" class="btn btn-warning"></h3></div>');
+    $('#' + departmentIdTag).append('<div class="department-name" data-id="' + department['id'] + '"><h3 class="mr-2">' + department['name'] + '<img src="./libs/icons/pencil-24.svg" class="btn"></h3></div>');
 
     var departmentDetailsIdTag = 'departmentDetails-' + department['id'];
     $('#' + departmentIdTag).append('<div id="' + departmentDetailsIdTag + '" class="department-details"></div>');

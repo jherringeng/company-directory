@@ -30,15 +30,15 @@ function displayLocationPageData(tablesInput) {
     $('#company-locations').append('<div id="location-' + location['id'] + '" class="border border-primary location"></div>');
     var locationDetailsIdTag = '#locationDetails-' + location['id'];
     $(locationIdTag).append('<div id="locationDetails-' + location['id']  + '" class="location-details"></div>');
-    $(locationDetailsIdTag).append('<div class="location-name" data-id="' + location['id'] + '"><h3 class="mr-2">' + location['name'] + '<img src="./libs/icons/info-24.svg" class="btn btn-warning"></h3></div>');
+    $(locationDetailsIdTag).append('<div class="location-name" data-id="' + location['id'] + '"><h3 class="mr-2">' + location['name'] + '<img src="./libs/icons/pencil-24.svg" class="btn"></h3></div>');
     var managerName;
     if (location['firstName'] == null || location['firstName'] == null) {
       managerName = "Open Position";
     } else {
       managerName = location['firstName'] + ' ' + location['lastName'];
     }
-    $(locationDetailsIdTag).append('<h5>Manager: <span class="branchManager btn btn-lg btn-outline-dark"  data-id="' + location['manager'] + '">' + managerName + '</span></h5>');
-    $(locationDetailsIdTag).append('<div><h5>' + location['address'] +', ' + location['name'] + ', ' + location['postcode'] + '</h5></div>');
+    $(locationDetailsIdTag).append('<h5 class="location-manager"><span class="manager-label">Manager: </span><span class="branchManager btn btn-lg btn-outline-dark"  data-id="' + location['manager'] + '">' + managerName + '</span></h5>');
+    $(locationDetailsIdTag).append('<h5 class="location-address">' + location['address'] +', ' + location['name'] + ', ' + location['postcode'] + '</h5>');
     departments.forEach(function(department){
 
       if (department['locationID'] === location['id']) {
@@ -53,8 +53,8 @@ function displayLocationPageData(tablesInput) {
         } else {
           managerName = department['managerFirstName'] + ' ' + department['managerLastName'];
         }
-        $('#' + departmentIdTag).append('<div class="location-department-manager">Manager: <span class="employee-name btn btn-outline-dark"  data-id="' + department['departmentManager'] + '">' + managerName + '</span></div>');
-        $('#' + departmentIdTag).append('<button data-toggle="collapse" data-target="#' + departmentEmployeesIdTag + '" class="btn btn-info location-show-employees">Show Employees</button>');
+        $('#' + departmentIdTag).append('<div class="location-department-manager"><span class="manager-label">Manager: </span><span class="employee-name btn btn-outline-dark"  data-id="' + department['departmentManager'] + '">' + managerName + '</span></div>');
+        $('#' + departmentIdTag).append('<button data-toggle="collapse" data-target="#' + departmentEmployeesIdTag + '" class="btn btn-info btn-show-employees">Show Employees</button>');
         $(locationIdTag).append('<div id="' + departmentEmployeesIdTag + '" class="location-department-employees collapse">');
         console.log(departmentEmployeesIdTag)
         employees.forEach(function(employee) {
@@ -393,17 +393,46 @@ $(document).on('click', '#deleteLocation', function () {
   deleteLocationModal(locationId, locationName);
 });
 
+function checkIfDepartmentInLocation(department, locationID) {
+  return department['locationID'] == locationID;
+}
+
 function deleteLocationModal(locationId, locationName) {
-  $("#confirmationModalLabel").html('Delete ' + locationName + ' location?');
-  $("#confirmationModalBody").html("");
 
-  // Add buttons to modal footer
-  $('#confirmationModalFooter').html("");
-  $("#confirmationModalFooter").append('<button id="confirmDeleteLocation" type="button" class="btn btn-danger float-right" data-dismiss="modal" data-id="' + locationId + '">Confirm</button>');
-  $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Cancel</button>');
-  $('#modal-footer').show();
+  var departmentsInLocation = departments.filter(department => department['locationID'] == locationId);
 
-  $('#confirmationModal').modal('show');
+  console.log(departmentsInLocation)
+
+  if(departmentsInLocation.length == 0) {
+    $("#confirmationModalLabel").html('Delete ' + locationName + ' location?');
+    $("#confirmationModalBody").html("");
+
+    // Add buttons to modal footer
+    $('#confirmationModalFooter').html("");
+    $("#confirmationModalFooter").append('<button id="confirmDeleteLocation" type="button" class="btn btn-danger float-right" data-dismiss="modal" data-id="' + locationId + '">Confirm</button>');
+    $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Cancel</button>');
+    $('#modal-footer').show();
+
+    $('#confirmationModal').modal('show');
+  }
+
+  else {
+    $("#confirmationModalLabel").html('Cannot delete ' + locationName + ' location.');
+    $("#confirmationModalBody").html("");
+    $("#confirmationModalBody").append('<p>Please move or delete the following <a href="/company-directory/departments.html">departments</a> to delete location:</p>');
+    departmentsInLocation.forEach(function(department) {
+      $("#confirmationModalBody").append('<p>' + department['name'] + '</p>');
+    });
+    $("#confirmationModalBody").append();
+
+    // Add buttons to modal footer
+    $('#confirmationModalFooter').html("");
+    $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
+    $('#modal-footer').show();
+
+    $('#confirmationModal').modal('show');
+  }
+
 }
 
 // Event listener for new employee modal - adds employee to database

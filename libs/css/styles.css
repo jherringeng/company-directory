@@ -14,6 +14,10 @@ table {
   width: 100%;
 }
 
+.container {
+  background-color: #FFFFFF;
+}
+
 .table td {
   padding-top: 8px;
   padding-bottom: 8px;
@@ -26,10 +30,10 @@ table {
 
 .btn-outline-dark {
   box-shadow: 1px 1px 1px 1px #ff6200 !important;
+  background-color: white;
 }
 
 .location-name {
-  background-color: yellow;
   margin-bottom: 12px;
 }
 
@@ -65,21 +69,12 @@ table {
     padding: 16px;
 }
 
-.employee {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  padding: 4px 0px;
-  margin: 4px 0px;
-}
-
-.employee:hover {
-  cursor: pointer;
-}
 
 .location {
   padding: 10px;
   margin: 10px 0px;
+  background-color: #5ca0f2;
+  background-image: linear-gradient(0.5deg, #5ca0f2 0%, #f5f7f6 5%);
 }
 
 .location-details {
@@ -89,7 +84,7 @@ table {
 }
 
 .location-name {
-  /* width: 100%; */
+  width: 35%;
 }
 
 .location-department {
@@ -99,17 +94,29 @@ table {
   align-items: center;
 }
 
+.location-manager {
+  text-align: left;
+}
+
+.location-address {
+  width: 30%;
+  text-align: right;
+}
+
 .location-department-manager {
   width: 30%;
+  text-align: left;
 }
 
 .location-department-name {
-  width: 30%;
+  width: 40%;
 }
 
 .department {
   padding: 10px;
   margin: 10px 0px;
+  background-color: #5ca0f2;
+  background-image: linear-gradient(0.5deg, #5ca0f2 0%, #f5f7f6 10%);
 }
 
 .department-name {
@@ -129,28 +136,38 @@ table {
   justify-content: space-between;
 }
 
+.employee {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 4px 0px;
+  margin: 4px 0px;
+  background-color: white;
+  background-image: linear-gradient(0.5deg, #5ca0f2 0%, #F8F9FA 10%);
+}
+
+.employee:hover {
+  cursor: pointer;
+}
+
 .employee-name {
   margin: 5px;
 }
 
 .employee:nth-child(odd) {
-  background-color: white;
+  background-image: linear-gradient(0.5deg, #5ca0f2 0%, #f5f7f6 10%);
 }
 
 .employee:nth-child(even) {
-  background-color: #CCC;
+  background-image: linear-gradient(180.5deg, #5ca0f2 0%, #f5f7f6 10%);
 }
 
-.employee:nth-child(even) {
-  background-color: #F7F7F9;
+.employee.offsite-employee {
+  background-image: linear-gradient(0.5deg, #5ca0f2 0%, #fff3cd 10%);
 }
 
-.offsite-employee {
-  background-color: #fff3cd !important;
-}
-
-.absent-employee {
-  background-color: #f8d7da !important;
+.employee.absent-employee {
+  background-image: linear-gradient(0.5deg, #5ca0f2 0%, #f8d7da 10%);
 }
 
 .employee-info{
@@ -159,7 +176,7 @@ table {
   word-wrap: break-word;
 }
 
-.location-show-employees {
+.btn-show-employees {
   display: inline-block;
   float: right;
 }
@@ -182,9 +199,107 @@ table {
   display: none;
 }
 
+#confirmationModalBody {
+  padding: 8px 16px;
+}
+
 @media only screen and (max-width: 600px) {
 
+  html {
+    font-size: 62.5%;
+  }
+
   .location-details {
+    display: block;
+  }
+
+  .location-department {
+    display: block;
+  }
+
+  .location-department-name {
+    width: auto;
+  }
+
+  .location-department-manager {
+    display: inline;
+  }
+
+  .department-details {
+    display: block;
+  }
+
+  .employee-info{
+    width: 50%;
+    padding: 3px;
+  }
+
+  .employeeName{
+    width: 100%;
+  }
+
+  .btn-show-employees {
+    width: 100%;
+    float: inherit;
+  }
+
+  .location-manager {
+    text-align: left;
+  }
+
+  .location-address {
+    text-align: left;
+  }
+
+  .department-show-employees {
+    width: 100%;
+    float: inherit;
+  }
+
+  .department-lastline {
+    display: block;
+  }
+
+  .nav-toolbar-small {
+    display: block;
+  }
+
+  .nav-toolbar-icon {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 600px) and (max-width: 990px){
+
+  html {
+    font-size: 75%;
+  }
+
+  .location-manager {
+    text-align: center;
+  }
+
+  .location-address {
+    text-align: right;
+  }
+
+  .location-department-manager {
+    text-align: left;
+  }
+
+  .manager-label {
+    display: none;
+  }
+
+  .nav-toolbar-small {
+    display: block;
+  }
+
+  .nav-toolbar-icon {
+    display: none;
+  }
+
+  /* .location-details {
     display: block;
   }
 
@@ -209,7 +324,7 @@ table {
     width: 100%;
   }
 
-  .location-show-employees {
+  .btn-show-employees {
     width: 100%;
     float: inherit;
   }
@@ -229,5 +344,5 @@ table {
 
   .nav-toolbar-icon {
     display: none;
-  }
+  } */
 }

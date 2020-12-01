@@ -1,9 +1,5 @@
 <?php
 
-	// example use from browser
-	// use insertDepartment.php first to create new dummy record and then specify it's id in the command below
-	// http://localhost/companydirectory/libs/php/deleteDepartmentByID.php?id= <id>
-
 	// remove next two lines for production
 
 	ini_set('display_errors', 'On');
@@ -33,25 +29,13 @@
 
 	}
 
-	// $_REQUEST used for development / debugging. Remember to cange to $_POST for production
+	// Original code
+	// $query = 'SELECT id, name, locationID FROM department';
+	$locationId = $_REQUEST['locationId'];
 
-	$query = 'SELECT manager FROM location WHERE id = ' . $_REQUEST['locationId'];
-
-	$result = $conn->query($query);
-
-	$row = mysqli_fetch_assoc($result);
-
-	$query = "UPDATE personnel SET jobTitle = NULL WHERE id = ". $row['manager'];
+	$query = "SELECT department.id, department.name, department.departmentManager, department.locationID, personnel.firstName as managerFirstName, personnel.lastName as managerLastName, location.name as location FROM department LEFT JOIN personnel ON department.departmentManager=personnel.id LEFT JOIN location ON department.locationID=location.id WHERE department.locationID = '$locationId' ORDER BY name";
 
 	$result = $conn->query($query);
-
-	$query = 'DELETE FROM location WHERE id = ' . $_REQUEST['locationId'];
-
-	$result = $conn->query($query);
-
-	// $query = "UPDATE department SET locationID = NULL WHERE locationID = ". $_REQUEST['locationId'];
-	//
-	// $result = $conn->query($query);
 
 	if (!$result) {
 
@@ -68,11 +52,19 @@
 
 	}
 
+   	$data = [];
+
+	while ($row = mysqli_fetch_assoc($result)) {
+
+		array_push($data, $row);
+
+	}
+
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
-	$output['data'] = [];
+	$output['data'] = $data;
 
 	mysqli_close($conn);
 
