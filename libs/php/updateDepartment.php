@@ -34,7 +34,20 @@
 
 	$id = $_REQUEST['id']; $departmentName = $_REQUEST['departmentName']; $locationID = $_REQUEST['locationID'];
 
+	// Gets current location of department for condition
+	$query = "SELECT locationID FROM department WHERE id='$id'";
+
+	$result = $conn->query($query);
+
+	$list = mysqli_fetch_array($result);
+
+	$currentLocation = $list[0];
+
 	$query = "UPDATE department SET name='$departmentName', locationID='$locationID' WHERE id='$id'";
+
+	$conn->query($query);
+
+	$query = "UPDATE personnel SET currentLocationId = '$locationID' WHERE departmentID='$id' AND currentLocationId = '$currentLocation'";
 
 	$conn->query($query);
 

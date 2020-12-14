@@ -9,13 +9,13 @@ export function getAllTables(callback) {
     success: function(result) {
 
       if (result.status.name == "ok") {
-        console.log(result['data'])
+        // console.log(result['data'])
         callback(result['data']);
       }
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 }
@@ -37,7 +37,7 @@ export function getAllDepartments(callback) {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 }
@@ -59,14 +59,14 @@ export function getAllLocations(callback) {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 }
 
 export function getEmployee(employeeId, callback) {
 
-  console.log("Getting employee")
+  // console.log("Getting employee")
 
   $.ajax({
     url: "libs/php/getEmployee.php",
@@ -77,7 +77,7 @@ export function getEmployee(employeeId, callback) {
     },
     success: function(result) {
 
-      console.log(result)
+      // console.log(result)
       if (result.status.name == "ok") {
 
         var employee = result['data'][0];
@@ -87,7 +87,7 @@ export function getEmployee(employeeId, callback) {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 
@@ -95,7 +95,7 @@ export function getEmployee(employeeId, callback) {
 
 export function updateEmployee(employeeId, departments, locations, statuses) {
 
-  console.log("Update employee")
+  // console.log("Update employee")
 
   $.ajax({
     url: "libs/php/getEmployee.php",
@@ -106,7 +106,7 @@ export function updateEmployee(employeeId, departments, locations, statuses) {
     },
     success: function(result) {
 
-      console.log(result)
+      // console.log(result)
       if (result.status.name == "ok") {
 
         var employee = result['data'][0];
@@ -120,6 +120,8 @@ export function updateEmployee(employeeId, departments, locations, statuses) {
         $('.modalForm').attr("data-id", employee['id'] );
 
         $("#informationModalBody").append('<table id="employeeTable" class="table">');
+
+          $("#employeeTable").append('<tr style="display: none;"><td><input type="text" id="employeeId" name="employeeId" value="' + employee['id'] + '" required></td></tr>');
 
           $("#employeeTable").append('<tr><td><label for="fname">First name</label></td><td><input type="text" id="fname" name="fname" value="' + employee['firstName'] + '" required></td></tr>');
           $("#employeeTable").append('<tr><td><label for="lname">Last Name</td><td><input type="text" id="lname" name="lname" value="' + employee['lastName'] + '" required></td></tr>');
@@ -161,7 +163,7 @@ export function updateEmployee(employeeId, departments, locations, statuses) {
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 
@@ -169,15 +171,14 @@ export function updateEmployee(employeeId, departments, locations, statuses) {
 
 
 export function employeeSaveUpdate(employeeId, modalCallback, updateCallback, displayCallback) {
-  console.log("Saving update to employee")
-  console.log($('#location').val())
+  // console.log("Saving update to employee")
 
   $.ajax({
     url: "libs/php/updateEmployee.php",
     type: 'POST',
     dataType: 'json',
     data: {
-      id: employeeId,
+      id: $('#employeeId').val(),
       lastName: $('#lname').val(),
       firstName: $('#fname').val(),
       jobTitle: $('#title').val(),
@@ -190,7 +191,7 @@ export function employeeSaveUpdate(employeeId, modalCallback, updateCallback, di
 
       if (result.status.name == "ok") {
 
-        console.log("Updated Employee")
+        // console.log("Updated Employee")
         var employee = result['data'][0];
         modalCallback(employee);
 
@@ -201,7 +202,7 @@ export function employeeSaveUpdate(employeeId, modalCallback, updateCallback, di
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 }
@@ -248,7 +249,7 @@ export function promoteEmployeeModal(employeeId, departments, locations) {
 }
 
 export function promoteEmployee(employeeId, modalCallback, updateCallback, displayCallback) { //
-  console.log("Promoting employee")
+  // console.log("Promoting employee")
 
   var jobTier;
 
@@ -281,10 +282,10 @@ export function promoteEmployee(employeeId, modalCallback, updateCallback, displ
 
       if (result.status.name == "ok") {
 
-        console.log("Promoted Employee")
-        console.log(result)
+        // console.log("Promoted Employee")
+        // console.log(result)
         var employee = result['data'][0];
-        console.log(employee)
+        // console.log(employee)
         // getEmployee(employeeId, modalCallback)
         modalCallback(employee)
 
@@ -294,14 +295,14 @@ export function promoteEmployee(employeeId, modalCallback, updateCallback, displ
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed: " + textStatus + ' ' + errorThrown);
+      // console.log("Request failed: " + textStatus + ' ' + errorThrown);
       console.warn(jqXHR.responseText)
     }
   });
 }
 
 export function deleteEmployee(employeeId, updateCallback, displayCallback) {
-  console.log("Deleting employee")
+  // console.log("Deleting employee")
 
   $.ajax({
     url: "libs/php/deleteEmployeeByID.php",
@@ -314,7 +315,7 @@ export function deleteEmployee(employeeId, updateCallback, displayCallback) {
 
       if (result.status.name == "ok") {
 
-        console.log("Deleted Employee")
+        // console.log("Deleted Employee")
 
         updateCallback(displayCallback);
         $('#informationModal').modal('hide');
@@ -324,7 +325,7 @@ export function deleteEmployee(employeeId, updateCallback, displayCallback) {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });

@@ -27,14 +27,14 @@ function getAllTablesForEmployees(callback) {
       if (result.status.name == "ok") {
 
         var tableData = result['data'];
-        console.log(tableData)
+        // console.log(tableData)
         callback(tableData);
 
       }
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 }
@@ -57,7 +57,7 @@ function displayEmployeePageData(tablesInput) {
       departmentManagerId[department['id']] = department['departmentManager'];
     }
   });
-  console.log(departmentLocation)
+  // console.log(departmentLocation)
   locations = tablesInput['locations'];
   locations.forEach(function(location) {
     if (location['managerFirstName'] == null || location['managerLastName'] == null) {
@@ -66,7 +66,7 @@ function displayEmployeePageData(tablesInput) {
       locationManager[location['id']] = location['managerFirstName'] + ' ' + location['managerLastName'];
     }
   });
-  console.log(locations)
+  // console.log(locations)
 
   statuses = tablesInput['status']
 
@@ -90,14 +90,14 @@ function getAllEmployees(callback) {
       if (result.status.name == "ok") {
 
         employees = result['data'];
-        console.log(employees)
+        // console.log(employees)
         callback(employees);
 
       }
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 }
@@ -134,8 +134,6 @@ function displayAllEmployees(employees) {
     if(employee['status'] != 1) {
       $("#employee" + employee['id']).addClass( "absent-employee" );
     } else if (employee['location'] != departmentLocation[employee['departmentID']]) {
-      console.log(departmentLocation[employee['departmentID']])
-      console.log(employee['location'])
       $("#employee" + employee['id']).addClass( "offsite-employee" );
     }
 
@@ -191,18 +189,18 @@ $(document).on('change', '#managerTier', function () {
 $(document).on('submit', '#updateEmployeeModalForm', function () {
   var employeeId = $('#updateEmployeeModalForm').data("id");
   employeeSaveUpdate(employeeId);
-  console.log(employeeId)
+  // console.log(employeeId)
 });
 
 function employeeSaveUpdate(employeeId) {
-  console.log("Saving update to employee");
+  // console.log("Saving update to employee");
 
   $.ajax({
     url: "libs/php/updateEmployee.php",
     type: 'POST',
     dataType: 'json',
     data: {
-      id: employeeId,
+      id: $('#employeeId').val(),
       lastName: $('#lname').val(),
       firstName: $('#fname').val(),
       jobTitle: $('#title').val(),
@@ -215,8 +213,8 @@ function employeeSaveUpdate(employeeId) {
 
       if (result.status.name == "ok") {
 
-        console.log("Updated Employee")
-        console.log();
+        // console.log("Updated Employee")
+        // console.log();
         var employee = result['data'][0];
         displayEmployeeInfoModal(employee);
 
@@ -226,7 +224,7 @@ function employeeSaveUpdate(employeeId) {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 }
@@ -240,7 +238,7 @@ $(document).on('change', '#department', function () {
 function updateLocationToDepartment() {
   var departmentSelected = $('#department').val();
   $('#baseLocation').html( departmentLocation[departmentSelected] );
-  console.log(departmentLocationId)
+  // console.log(departmentLocationId)
   $('#location').val( departmentLocationId[departmentSelected] ).change();
 }
 
@@ -291,7 +289,7 @@ $(document).on('submit', '#newEmployeeModal', function () {
 });
 
 function saveNewEmployee() {
-  console.log("Saving employee")
+  // console.log("Saving employee")
 
   $.ajax({
     url: "libs/php/newEmployee.php",
@@ -309,7 +307,7 @@ function saveNewEmployee() {
 
       if (result.status.name == "ok") {
 
-        console.log("Saved Employee")
+        // console.log("Saved Employee")
         var employee = result['data'][0];
         displayEmployeeInfoModal(employee);
 
@@ -319,7 +317,7 @@ function saveNewEmployee() {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 }
@@ -362,7 +360,7 @@ $(document).on('click', '#employeeFilterButton', function () {
 });
 
 function getFilteredEmployees(callback) {
-  console.log("filtering employees")
+  // console.log("filtering employees")
   $.ajax({
     url: "libs/php/getFilteredEmployees.php",
     type: 'POST',
@@ -376,7 +374,7 @@ function getFilteredEmployees(callback) {
 
       if (result.status.name == "ok") {
 
-        console.log("Success!")
+        // console.log("Success!")
         employees = result['data'];
         callback(employees);
 
@@ -384,7 +382,7 @@ function getFilteredEmployees(callback) {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 }
@@ -396,7 +394,7 @@ $(document).on('keyup', '#searchEmployeesInput', 'input', function () {
 });
 
 function searchAllEmployees(searchTerm, callback) {
-  console.log("Searching employees")
+  // console.log("Searching employees")
   $.ajax({
     url: "libs/php/searchAllEmployees.php",
     type: 'POST',
@@ -408,7 +406,7 @@ function searchAllEmployees(searchTerm, callback) {
 
       if (result.status.name == "ok") {
 
-        console.log('Searched employees')
+        // console.log('Searched employees')
         employees = result['data'];
         callback(employees);
 
@@ -416,7 +414,7 @@ function searchAllEmployees(searchTerm, callback) {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
     }
   });
 }

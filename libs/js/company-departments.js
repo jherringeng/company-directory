@@ -16,13 +16,13 @@ function displayDepartmentPageData(tablesInput) {
   employees = {}
   // Set global variables
   locations = tablesInput['locations'];
-  console.log(locations)
+  // console.log(locations)
   departments = tablesInput['departments'];
-  console.log(departments)
+  // console.log(departments)
   employees = tablesInput['employees'];
-  console.log(employees)
+  // console.log(employees)
   statuses = tablesInput['status'];
-  console.log(statuses)
+  // console.log(statuses)
 
   // Adds locations then departments in that location then employees in that department
   departments.forEach(function(department) {
@@ -40,6 +40,19 @@ function displayDepartmentPageData(tablesInput) {
       managerName = department['managerFirstName'] + ' ' + department['managerLastName'];
     }
     $('#' + departmentDetailsIdTag).append('<h5 id="manager' + department['id']  + '" class="department-manager">Manager: <span class="employee-name btn btn-outline-dark"  data-id="' + department['departmentManager'] + '">' + managerName + '</span></h5>');
+
+    var manager = employees.filter(employee => {
+      return employee.id == department['departmentManager'];
+    })
+
+    // console.log(manager)
+    if (manager[0]) {
+      if (manager[0]['status'] != 1) {
+        $('#manager' + department['id'] + ' span').addClass('absent-employee');
+      } else if (manager[0]['currentLocationId'] !== department['locationID']) {
+        $('#manager' + department['id'] + ' span').addClass('offsite-employee');
+      }
+    }
 
     $('#' + departmentDetailsIdTag).append('<h5 class="department-location">' + department['location'] + '</h5>');
 
@@ -83,7 +96,7 @@ $(document).on('click', '#employeeUpdateButton', function () {
 
 $(document).on('submit', '#updateEmployeeModalForm', function () {
   var employeeId = $(this).data("id");
-  console.log($('#updateEmployeeModalForm').data("id"))
+  // console.log($('#updateEmployeeModalForm').data("id"))
   employeeSaveUpdate(employeeId, displayEmployeeInfoModal, getAllTables, displayDepartmentPageData);
 });
 
@@ -128,7 +141,7 @@ $(document).on('click', '.department-name', function () {
 });
 
 function getDepartment(departmentId, displayInfoModal) {
-  console.log("getting department")
+  // console.log("getting department")
   $.ajax({
     url: "libs/php/getDepartmentByID.php",
     type: 'POST',
@@ -138,20 +151,20 @@ function getDepartment(departmentId, displayInfoModal) {
     },
     success: function(result) {
 
-      console.log(result)
+      // console.log(result)
 
       if (result.status.name == "ok") {
 
-        console.log("Showing Department")
+        // console.log("Showing Department")
         var department = result['data'][0];
-        console.log(department)
+        // console.log(department)
         displayInfoModal(department);
 
       }
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });
@@ -204,10 +217,12 @@ function editDepartmentModal(departmentId, departmentName, locationID, locations
 
   // Constructs HTML for modal form
   $('.modalForm').attr("id","editDepartmentModal");
+  // NOTE Remove?
   $('.modalForm').attr("data-id", departmentId );
 
   $("#informationModalBody").append('<table id="inputTable" class="table">');
 
+    $("#inputTable").append('<tr class="d-none"><td></td><td><input type="text" id="departmentIdInput" name="departmentNameInput" value="' + departmentId + '"></td></tr>');
     $("#inputTable").append('<tr><td><label for="departmentNameInput">Department Name</label></td><td><input type="text" id="departmentNameInput" name="departmentNameInput" value="' + departmentName + '" pattern="[0-9A-Za-z ]+" required></td></tr>');
     $("#inputTable").append('<tr><td><label for="locationInput">Available locations: </td><td><select id="locationInput" name="locationInput" value=""></td></tr>');
       locations.forEach(function(location) {
@@ -233,24 +248,24 @@ $(document).on('submit', '#editDepartmentModal', function () {
 });
 
 function updateDepartment(departmentId, displayInfoModal, updateCallback, displayCallback) {
-  console.log("Updating department")
+  // console.log("Updating department")
 
   $.ajax({
     url: "libs/php/updateDepartment.php",
     type: 'POST',
     dataType: 'json',
     data: {
-      id: departmentId,
+      id: $('#departmentIdInput').val(),
       departmentName: $('#departmentNameInput').val(),
       locationID: $('#locationInput').val(),
     },
     success: function(result) {
 
-      console.log(result)
+      // console.log(result)
 
       if (result.status.name == "ok") {
 
-        console.log("Saved Department")
+        // console.log("Saved Department")
         var department = result['data'][0];
         displayInfoModal(department);
 
@@ -261,7 +276,7 @@ function updateDepartment(departmentId, displayInfoModal, updateCallback, displa
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });
@@ -308,17 +323,35 @@ $(document).on('click', '#deleteDepartment', function () {
 });
 
 function deleteDepartmentModal(departmentId, departmentName) {
-  console.log("Confirm delete department")
-  $("#confirmationModalLabel").html('Delete ' + departmentName + ' department?');
-  $("#confirmationModalBody").html("");
 
-  // Add buttons to modal footer
-  $('#confirmationModalFooter').html("");
-  $("#confirmationModalFooter").append('<button id="confirmDeleteDepartment" type="button" class="btn btn-danger float-right" data-dismiss="modal" data-id="' + departmentId + '">Confirm</button>');
-  $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Cancel</button>');
-  $('#modal-footer').show();
+  var employeesInDepartment = employees.filter(employee => employee['departmentID'] == departmentId);
 
-  $('#confirmationModal').modal('show');
+  // console.log(employeesInDepartment)
+
+  if(employeesInDepartment.length == 0) {
+    // console.log("Confirm delete department")
+    $("#confirmationModalLabel").html('Delete ' + departmentName + ' department?');
+    $("#confirmationModalBody").html("");
+
+    // Add buttons to modal footer
+    $('#confirmationModalFooter').html("");
+    $("#confirmationModalFooter").append('<button id="confirmDeleteDepartment" type="button" class="btn btn-danger float-right" data-dismiss="modal" data-id="' + departmentId + '">Confirm</button>');
+    $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Cancel</button>');
+    $('#modal-footer').show();
+
+    $('#confirmationModal').modal('show');
+  } else {
+    $("#confirmationModalLabel").html('Cannot delete department ' + departmentName + '.');
+    $("#confirmationModalBody").html("");
+    $("#confirmationModalBody").append('<p>Please move or delete all employees assigned to the department.</p>');
+
+    // Add buttons to modal footer
+    $('#confirmationModalFooter').html("");
+    $("#confirmationModalFooter").append('<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Close</button>');
+    $('#modal-footer').show();
+
+    $('#confirmationModal').modal('show');
+  }
 }
 
 // Event listener for new employee modal - adds employee to database
@@ -328,7 +361,7 @@ $(document).on('click', '#confirmDeleteDepartment', function () {
 });
 
 function deleteDepartment(departmentId, updateCallback, displayCallback) {
-  console.log("Deleting department")
+  // console.log("Deleting department")
 
   $.ajax({
     url: "libs/php/deleteDepartmentByID.php",
@@ -343,7 +376,7 @@ function deleteDepartment(departmentId, updateCallback, displayCallback) {
 
       if (result.status.name == "ok") {
 
-        console.log("Deleted Department")
+        // console.log("Deleted Department")
 
         updateCallback(displayCallback);
         $('#informationModal').modal('hide');
@@ -353,7 +386,7 @@ function deleteDepartment(departmentId, updateCallback, displayCallback) {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });
@@ -365,7 +398,7 @@ $(document).on('submit', '#newDepartmentModal', function () {
 });
 
 function saveNewDepartment(displayInfoModal, updateCallback, displayCallback) {
-  console.log("Saving department")
+  // console.log("Saving department")
 
   $.ajax({
     url: "libs/php/newDepartment.php",
@@ -377,11 +410,11 @@ function saveNewDepartment(displayInfoModal, updateCallback, displayCallback) {
     },
     success: function(result) {
 
-      console.log(result)
+      // console.log(result)
 
       if (result.status.name == "ok") {
 
-        console.log("Saved Department")
+        // console.log("Saved Department")
         var department = result['data'][0];
         displayInfoModal(department);
 
@@ -392,7 +425,7 @@ function saveNewDepartment(displayInfoModal, updateCallback, displayCallback) {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });
@@ -408,7 +441,7 @@ $(document).on('click', '#removeDepartmentManager', function () {
 });
 
 function removeDepartmentManagerModal(departmentId, departmentName, managerName, managerId) {
-  console.log("Confirm remove department manager")
+  // console.log("Confirm remove department manager")
   $("#confirmationModalLabel").html('Remove ' + managerName + ' as '+ departmentName + ' manager?');
   $("#confirmationModalBody").html("");
 
@@ -425,12 +458,12 @@ function removeDepartmentManagerModal(departmentId, departmentName, managerName,
 $(document).on('click', '#confirmRemoveDepartmentManager', function () {
   var departmentId = $(this).data('id');
   var managerId = $(this).data('managerid');
-  console.log(managerId)
+  // console.log(managerId)
   removeDepartmentManager(departmentId, managerId, getAllTables, displayDepartmentPageData);
 });
 
 function removeDepartmentManager(departmentId, managerId, updateCallback, displayCallback) {
-  console.log("Removing department manager")
+  // console.log("Removing department manager")
 
   $.ajax({
     url: "libs/php/removeDepartmentManager.php",
@@ -444,7 +477,7 @@ function removeDepartmentManager(departmentId, managerId, updateCallback, displa
 
       if (result.status.name == "ok") {
 
-        console.log("Removed Department manager")
+        // console.log("Removed Department manager")
 
         updateCallback(displayCallback);
         $('#informationModal').modal('hide');
@@ -454,8 +487,30 @@ function removeDepartmentManager(departmentId, managerId, updateCallback, displa
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });
+}
+
+/* Following from bootstrap-menu detail-smart-hide*/
+// add padding top to show content behind navbar
+$('.container').css('padding-top', $('.navbar').outerHeight() + 'px')
+
+var last_scroll_top = 0;
+var scroll_top = $(this).scrollTop();
+
+// detect scroll top or down
+if ($('.smart-scroll').length > 0) { // check if element exists
+
+    $(window).on('scroll', function() {
+        scroll_top = $(this).scrollTop();
+        if(scroll_top < last_scroll_top) {
+            $('.smart-scroll').removeClass('scrolled-down').addClass('scrolled-up');
+        }
+        else {
+            $('.smart-scroll').removeClass('scrolled-up').addClass('scrolled-down');
+        }
+        last_scroll_top = scroll_top;
+    });
 }

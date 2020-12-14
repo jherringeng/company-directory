@@ -16,7 +16,7 @@ function displayLocationPageData(tablesInput) {
 
   // Set global variables
   locations = tablesInput['locations'];
-  console.log(locations)
+  // console.log(locations)
   departments = tablesInput['departments'];
   employees = tablesInput['employees'];
   statuses = tablesInput['status'];
@@ -53,20 +53,36 @@ function displayLocationPageData(tablesInput) {
         } else {
           managerName = department['managerFirstName'] + ' ' + department['managerLastName'];
         }
-        $('#' + departmentIdTag).append('<div class="location-department-manager"><span class="manager-label">Manager: </span><span class="employee-name btn btn-outline-dark"  data-id="' + department['departmentManager'] + '">' + managerName + '</span></div>');
+        $('#' + departmentIdTag).append('<div class="location-department-manager"><span class="manager-label">Manager: </span><span class="employee-name btn btn-outline-dark" id="departmentManager' + department['departmentManager'] + '"  data-id="' + department['departmentManager'] + '">' + managerName + '</span></div>');
+
+        var manager = employees.filter(employee => {
+          return employee.id == department['departmentManager'];
+        })
+
+        // console.log(manager)
+        if (manager[0]) {
+          if (manager[0]['status'] != 1) {
+            $('#departmentManager' + department['departmentManager']).addClass('absent-employee');
+          } else if (manager[0]['currentLocationId'] != department['locationID']) {
+            $('#departmentManager' + department['departmentManager']).addClass('offsite-employee');
+          }
+        }
+
+        // console.log('#' + departmentIdTag + '.location-department-manager.employee-name')
+
         $('#' + departmentIdTag).append('<button data-toggle="collapse" data-target="#' + departmentEmployeesIdTag + '" class="btn btn-info btn-show-employees">Show Employees</button>');
         $(locationIdTag).append('<div id="' + departmentEmployeesIdTag + '" class="location-department-employees collapse">');
-        console.log(departmentEmployeesIdTag)
+        // console.log(departmentEmployeesIdTag)
         employees.forEach(function(employee) {
 
           if (employee['departmentID'] === department['id'] && employee['id'] != department['departmentManager']) {
             $('#' + departmentEmployeesIdTag).append( '<div id="employee' + employee['id'] + '" class="employee-name btn btn-outline-dark" data-id=' + employee['id'] + '>' + employee['firstName'] + ' ' + employee['lastName'] + '</div>');
-            if (employee['currentLocationId'] !== department['locationID']) {
-              $('#employee' + employee['id']).addClass('offsite-employee');
-            }
             if (employee['status'] != 1) {
               $('#employee' + employee['id']).addClass('absent-employee');
+            } else if (employee['currentLocationId'] !== department['locationID']) {
+              $('#employee' + employee['id']).addClass('offsite-employee');
             }
+
           }
         });
       }
@@ -180,16 +196,16 @@ function getLocation(locationId, displayInfoModal) {
 
       if (result.status.name == "ok") {
 
-        console.log("Showing Location")
+        // console.log("Showing Location")
         var location = result['data'][0];
-        console.log(location)
+        // console.log(location)
         displayInfoModal(location);
 
       }
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });
@@ -246,16 +262,16 @@ function editLocation(locationId, displayInfoModal) {
 
       if (result.status.name == "ok") {
 
-        console.log("Showing Location")
+        // console.log("Showing Location")
         var location = result['data'][0];
-        console.log(location)
+        // console.log(location)
         displayInfoModal(location);
 
       }
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });
@@ -267,12 +283,14 @@ function editLocationModal(location) {
 
   // Constructs HTML for modal form
   $('.modalForm').attr("id","editLocationModal");
+  // NOTE Remove?
   $('.modalForm').attr("data-id", location['id'] );
 
   $("#informationModalBody").append('<table id="inputTable" class="table">');
 
-    $("#inputTable").append('<tr><td><label for="locationNameInput">Location Name</label></td><td><input type="text" id="locationNameInput" name="locationNameInput" value="' + location['name'] + '" pattern="[A-Za-z ]+" required></td></tr>');
-    $("#inputTable").append('<tr><td><label for="addressInput">Address</td><td><input type="text" id="addressInput" name="addressInput" value="' + location['address'] + '" pattern="[0-9A-Za-z ]+" required></td></tr>');
+    $("#inputTable").append('<tr class="d-none"\"><td><input type="text" id="locationIdInput" name="locationIdInput" value="' + location['id'] + '"</td></tr>');
+    $("#inputTable").append('<tr><td><label for="locationNameInput">Location Name</label></td><td><input type="text" id="locationNameInput" name="locationNameInput" value="' + location['name'] + '" pattern="^[A-Za-z -]+$" required></td></tr>');
+    $("#inputTable").append('<tr><td><label for="addressInput">Address</td><td><input type="text" id="addressInput" name="addressInput" value="' + location['address'] + '" pattern="^[0-9A-Za-z\- ]+$" required></td></tr>');
     $("#inputTable").append('<tr><td><label for="postcodeInput">Postcode</td><td><input type="text" id="postcodeInput" name="postcodeInput" value="' + location['postcode'] + '" pattern="[0-9A-Za-z ]+" required></td></tr>');
 
   // Add buttons to modal footer
@@ -292,14 +310,14 @@ $(document).on('submit', '#editLocationModal', function () {
 });
 
 function updateLocation(locationId, displayInfoModal, updateCallback, displayCallback) {
-  console.log("Editing location")
+  // console.log("Editing location")
 
   $.ajax({
     url: "libs/php/editLocation.php",
     type: 'POST',
     dataType: 'json',
     data: {
-      locationId: locationId,
+      locationId: $('#locationIdInput').val(),
       locationName: $('#locationNameInput').val(),
       address: $('#addressInput').val(),
       postcode: $('#postcodeInput').val(),
@@ -308,9 +326,9 @@ function updateLocation(locationId, displayInfoModal, updateCallback, displayCal
 
       if (result.status.name == "ok") {
 
-        console.log("Saved Location")
+        // console.log("Saved Location")
         var location = result['data'][0];
-        console.log(location)
+        // console.log(location)
         displayInfoModal(location);
 
         updateCallback(displayCallback);
@@ -319,7 +337,7 @@ function updateLocation(locationId, displayInfoModal, updateCallback, displayCal
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });
@@ -331,7 +349,7 @@ $(document).on('submit', '#newLocationModal', function () {
 });
 
 function saveNewLocation(displayInfoModal, updateCallback, displayCallback) {
-  console.log("Saving location")
+  // console.log("Saving location")
 
   $.ajax({
     url: "libs/php/newLocation.php",
@@ -346,7 +364,7 @@ function saveNewLocation(displayInfoModal, updateCallback, displayCallback) {
 
       if (result.status.name == "ok") {
 
-        console.log("Saved Location")
+        // console.log("Saved Location")
         var location = result['data'][0];
         displayInfoModal(location);
 
@@ -356,7 +374,7 @@ function saveNewLocation(displayInfoModal, updateCallback, displayCallback) {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });
@@ -401,8 +419,6 @@ function deleteLocationModal(locationId, locationName) {
 
   var departmentsInLocation = departments.filter(department => department['locationID'] == locationId);
 
-  console.log(departmentsInLocation)
-
   if(departmentsInLocation.length == 0) {
     $("#confirmationModalLabel").html('Delete ' + locationName + ' location?');
     $("#confirmationModalBody").html("");
@@ -442,7 +458,7 @@ $(document).on('click', '#confirmDeleteLocation', function () {
 });
 
 function deleteLocation(locationId, updateCallback, displayCallback) {
-  console.log("Deleting location")
+  // console.log("Deleting location")
 
   $.ajax({
     url: "libs/php/deleteLocationByID.php",
@@ -455,7 +471,7 @@ function deleteLocation(locationId, updateCallback, displayCallback) {
 
       if (result.status.name == "ok") {
 
-        console.log("Deleted Location")
+        // console.log("Deleted Location")
 
         updateCallback(displayCallback);
         $('#informationModal').modal('hide');
@@ -465,7 +481,7 @@ function deleteLocation(locationId, updateCallback, displayCallback) {
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });
@@ -481,7 +497,7 @@ $(document).on('click', '#removeLocationManager', function () {
 });
 
 function removeLocationManagerModal(locationId, locationName, managerName, managerId) {
-  console.log("Confirm remove location manager")
+  // console.log("Confirm remove location manager")
   $("#confirmationModalLabel").html('Remove ' + managerName + ' as '+ locationName + ' manager?');
   $("#confirmationModalBody").html("");
 
@@ -498,12 +514,12 @@ function removeLocationManagerModal(locationId, locationName, managerName, manag
 $(document).on('click', '#confirmRemoveLocationManager', function () {
   var locationId = $(this).data('id');
   var managerId = $(this).data('managerid');
-  console.log(managerId)
+  // console.log(managerId)
   removeLocationManager(locationId, managerId, getAllTables, displayLocationPageData);
 });
 
 function removeLocationManager(locationId, managerId, updateCallback, displayCallback) {
-  console.log("Removing location manager")
+  // console.log("Removing location manager")
 
   $.ajax({
     url: "libs/php/removeLocationManager.php",
@@ -517,7 +533,7 @@ function removeLocationManager(locationId, managerId, updateCallback, displayCal
 
       if (result.status.name == "ok") {
 
-        console.log("Removed Location manager")
+        // console.log("Removed Location manager")
 
         updateCallback(displayCallback);
         $('#informationModal').modal('hide');
@@ -527,7 +543,7 @@ function removeLocationManager(locationId, managerId, updateCallback, displayCal
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      console.log("Request failed");
+      // console.log("Request failed");
       console.warn(jqXHR.responseText)
     }
   });

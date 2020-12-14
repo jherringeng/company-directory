@@ -170,6 +170,14 @@ table {
   background-image: linear-gradient(0.5deg, #5ca0f2 0%, #f8d7da 10%);
 }
 
+.employee-name.offsite-employee {
+  background-color: #fff3cd;
+}
+
+.employee-name.absent-employee {
+  background-color: #f8d7da;
+}
+
 .employee-info{
   width: 20%;
   padding: 3px;
@@ -206,15 +214,27 @@ table {
 @media only screen and (max-width: 600px) {
 
   html {
-    font-size: 62.5%;
+    font-size: 75%;
   }
 
   .location-details {
     display: block;
   }
 
+  .location-details div,h5 {
+    margin-bottom: 8px;
+  }
+
   .location-department {
     display: block;
+  }
+
+  .location-department div, span, button, .btn  {
+    margin-bottom: 8px;
+  }
+
+  .location-name {
+    width: auto;
   }
 
   .location-department-name {
@@ -226,7 +246,25 @@ table {
   }
 
   .department-details {
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .department-name {
+    width: 100%;
+  }
+
+  .department-manager {
+    width: 70%;
+  }
+
+  .department-location {
+    width: 30%;
+    text-align: right;
+  }
+
+  .btn-info {
+    width: 100%;
   }
 
   .employee-info{
@@ -248,6 +286,7 @@ table {
   }
 
   .location-address {
+    width: auto;
     text-align: left;
   }
 
@@ -272,7 +311,7 @@ table {
 @media only screen and (min-width: 600px) and (max-width: 990px){
 
   html {
-    font-size: 75%;
+    font-size: 87.5%;
   }
 
   .location-manager {

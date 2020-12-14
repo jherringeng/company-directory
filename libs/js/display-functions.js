@@ -25,7 +25,7 @@ export function displayEmployeeInfoModal(employee) {
 }
 
 export function deleteEmployeeModal(employeeId, employeeName) {
-  console.log("Confirm delete employee")
+  // console.log("Confirm delete employee")
   $("#confirmationModalLabel").html('Delete employee ' + employeeName + ' ?');
   $("#confirmationModalBody").html("");
 
